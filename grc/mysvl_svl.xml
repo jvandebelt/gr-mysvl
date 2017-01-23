@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<block>
+	<name>svl</name>
+	<key>mysvl_svl</key>
+	<category>[mysvl]</category>
+	<import>import mysvl</import>
+	<make>mysvl.svl($type.size*$vlen, $blocksize, $file)</make>
+	<param>
+		<name>File</name>
+		<key>file</key>
+		<value></value>
+		<type>file_open</type>
+	</param>
+	<param>
+		<name>IO Type</name>
+		<key>type</key>
+		<type>enum</type>
+		<option>
+			<name>Complex</name>
+			<key>complex</key>
+			<opt>size:gr.sizeof_gr_complex</opt>
+		</option>
+		<!--<option>
+			<name>Float</name>
+			<key>float</key>
+			<opt>size:gr.sizeof_float</opt>
+		</option>
+		<option>
+			<name>Int</name>
+			<key>int</key>
+			<opt>size:gr.sizeof_int</opt>
+		</option>
+		<option>
+			<name>Short</name>
+			<key>short</key>
+			<opt>size:gr.sizeof_short</opt>
+		</option>
+		<option>
+			<name>Byte</name>
+			<key>byte</key>
+			<opt>size:gr.sizeof_char</opt>
+		</option>!-->
+	</param>
+	<param>
+		<name>Number of Inputs </name>
+		<key>number_inputs</key>
+		<value>2</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>Number of Outputs </name>
+		<key>number_outputs</key>
+		<value>2</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>Block Size</name>
+		<key>blocksize</key>
+		<value>1</value>
+		<type>int</type>
+		<hide>part</hide>
+	</param>
+	<param>
+		<name>Vec Length</name>
+		<key>vlen</key>
+		<value>1</value>
+		<type>int</type>
+	</param>
+
+	<check>$number_inputs &gt; 0</check>
+	<check>$number_outputs &gt; 0</check>
+	<check>$vlen &gt;= 1</check>
+
+	<!-- Make one 'sink' node per input. Sub-nodes:
+	   * name (an identifier for the GUI)
+	   * type
+	   * vlen
+	   * optional (set to 1 for optional inputs) -->
+	<sink>
+		<name>in</name>
+		<type>$type</type>
+		<vlen>$vlen</vlen>
+		<nports>$number_inputs</nports>
+	</sink>
+	<!-- Make one 'source' node per output. Sub-nodes:
+	   * name (an identifier for the GUI)
+	   * type
+	   * vlen
+	   * optional (set to 1 for optional inputs) -->
+	<source>
+		<name>out</name>
+		<type>$type</type>
+		<vlen>$vlen</vlen>
+		<nports>$number_outputs</nports>
+	</source> 
+</block>
