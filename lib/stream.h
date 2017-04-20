@@ -18,42 +18,48 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_MYSVL_WEAVE_IMPL_H
-#define INCLUDED_MYSVL_WEAVE_IMPL_H
+#ifndef INCLUDED_STREAM_H
+#define INCLUDED_STREAM_H
 
-#include <mysvl/weave.h>
+#include <mysvl/svl.h>
+#include <gnuradio/fft/fft.h>
 
 namespace gr {
   namespace mysvl {
 
-    class weave_impl : public weave
+    class stream 
     {
-		private:
-			size_t d_itemsize;
-			unsigned int d_blocksize;
-			unsigned int d_ninputs;
-			unsigned int d_noutputs;
-			unsigned int d_current_input;
-			unsigned int d_current_output;
-			unsigned int d_size_bytes;
+	private:
 
-		public:
-			weave_impl(size_t itemsize, unsigned int blocksize);
-			~weave_impl();
+		fft::fft_complex 		*d_fft;
+		size_t 					d_fft_size;
+		std::vector<float>    	d_window;
+		bool 					d_forward;
+		float 					d_central_frequency;
+		float 					d_bandwidth;	
+		int 					d_itemsize;
 
-			bool check_topology(int ninputs, int noutputs);
-
-			// Where all the action really happens
-			void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-			int general_work(int noutput_items,
-			   gr_vector_int &ninput_items,
-			   gr_vector_const_void_star &input_items,
-			   gr_vector_void_star &output_items);
+	public:
+		stream(int fft_size, bool forward,
+			const std::vector<float> &window, int itemsize,
+			int nthreads=1);
+		stream();
+		~stream();
+		
+		size_t get_fft_size();
+		void print_fft_size();
+		void set_nthreads(int n);
+		int nthreads() const;
+		bool set_window(const std::vector<float> &window);
+		int work(std::vector<gr_complex> &input_items,
+				std::vector<gr_complex> &output_items); 
     };
+
+	typedef boost::shared_ptr<stream> stream_pointer;
+	typedef std::vector<stream_pointer> stream_vector;
 
   } // namespace mysvl
 } // namespace gr
 
-#endif /* INCLUDED_MYSVL_WEAVE_IMPL_H */
+#endif /* INCLUDED_STREAM_H */
 

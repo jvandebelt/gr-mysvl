@@ -11,7 +11,10 @@
 #include "mysvl/weave.h"
 #include "mysvl/svl.h"
 #include "spectrum_map.h"
+#include "read_fft_params.h"
 #include "hypervisor.h"
+#include "stream.h"
+#include <gnuradio/fft/fft.h>
 %}
 
 %include "mysvl/weave.h"

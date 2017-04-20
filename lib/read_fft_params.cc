@@ -18,9 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "read_fft_params.h"
 #include <gnuradio/thread/thread.h>
-#include "spectrum_map.h"
 #include <gnuradio/io_signature.h>
+#include <gnuradio/fft/window.h>
 #include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -28,37 +29,41 @@
 #include <stdexcept>
 #include <stdio.h>
 
+bool power_of_two(int x) {
+	bool check = false;
+	if(!(x == 0) && !(x & (x - 1)))
+		check = true;
+	return check;
+}
+
 namespace gr {
   namespace mysvl {
 
-	spectrum_map::spectrum_map() {
+	fft_params::fft_params() {
 		d_fp = 0;
 		d_new_fp=0;
-		d_spectrum_span=0;
 		d_updated = false;
     }
 
-	spectrum_map::spectrum_map(const char *filename) {
+	fft_params::fft_params(const char *filename) {
 		d_fp = 0;
 		d_new_fp=0;
-		d_spectrum_span=0;
 		d_updated = false;
 		open(filename);
 		do_update();
 		read_file();
     }
 
-    spectrum_map::~spectrum_map() {
+    fft_params::~fft_params() {
       if(d_fp)
         fclose ((FILE*)d_fp);
       if(d_new_fp)
         fclose ((FILE*)d_new_fp);
     }
 	
-	void spectrum_map::update_filename(const char *filename) {
+	void fft_params::update_filename(const char *filename) {
 		d_fp = 0;
 		d_new_fp=0;
-		d_spectrum_span=0;
 		d_updated = false;
 		open(filename);
 		do_update();
@@ -66,7 +71,7 @@ namespace gr {
 	}
 
 	void
-    spectrum_map::open(const char *filename) {
+    fft_params::open(const char *filename) {
 		// obtain exclusive access for duration of this function
 		gr::thread::scoped_lock lock(fp_mutex);
 
@@ -93,7 +98,7 @@ namespace gr {
 	}
 	
 	void
-    spectrum_map::close() {
+    fft_params::close() {
 		// obtain exclusive access for duration of this function
 		gr::thread::scoped_lock lock(fp_mutex);
 
@@ -105,7 +110,7 @@ namespace gr {
 	}
 
 	void
-    spectrum_map::do_update() {
+    fft_params::do_update() {
 		if(d_updated) {
 			gr::thread::scoped_lock lock(fp_mutex); // hold while in scope
 
@@ -119,60 +124,68 @@ namespace gr {
 	}
 
 	void
-	spectrum_map::read_file() {
+	fft_params::read_file() {
 		do_update();       // update d_fp is reqd
 		if(d_fp == NULL)
 		throw std::runtime_error("work with file not open");
 
 		gr::thread::scoped_lock lock(fp_mutex); // hold for the rest of this function
-	
-		int input_num =0;
-		int output_num =0;
+
+		int num =0;
 		
-		/*while(fgets(line, 20, (FILE*)d_fp)!= NULL) {
-			d_spectrum_map_in.push_back(atoi(line));
-			d_spectrum_span++;
-			//printf("%i",d_spectrum_map[d_spectrum_span-1]);
-		}
-*/
-		while(fscanf((FILE*)d_fp,"%d%d", &input_num, &output_num) != EOF) {
-				d_spectrum_map_in.push_back(input_num);
-				d_spectrum_map_out.push_back(output_num);
+		fft_list.clear();
 
-				d_spectrum_span++;
+		bool input;
+		int index;
+		int fft_size;
+		char temp_string[25];
+				
+		while(fscanf((FILE*)d_fp,"%d%d%d%s", &num, &index, &fft_size, &temp_string) == 4) {
+				if(num > 1 || num < 0) {
+				//GR_LOG_ERROR(d_logger, "error with spectrum map file \n");
+				perror("fft file error: input not a bool");
+				throw std::invalid_argument("error with fft file: input not a bool"); 
+				}
+				else 
+					input = (bool) num;
+				if(!power_of_two(fft_size)) {
+					//GR_LOG_ERROR(d_logger, "error with spectrum map file \n");
+					perror("fft file error: fft_size not a power of 2");
+					throw std::invalid_argument("error with fft file: fft_size not a power of 2");
+				}					
 
+				fft_parameters temp {input, index, fft_size, convert_window(fft_size, std::string(temp_string))};
+				fft_list.push_back(temp);		
+			}
+			if(ferror((FILE*)d_fp))
+				throw std::invalid_argument("error reading fft file");
 		}
-		if(ferror((FILE*)d_fp))
-			throw std::invalid_argument("error reading spectrum map file");
-		/*
-		if(d_spectrum_span%2 != 0) {
-			//GR_LOG_ERROR(d_logger, "error with spectrum map file \n");
-			perror("d_spectrum_span%2 != 0");
-			throw std::invalid_argument("error with spectrum map file: spectrum span not divisible by two");
-		}
-		*/
-	}
 	
-	int spectrum_map::get_size() const {
-		return d_spectrum_span;
+	std::vector<float> fft_params::convert_window(int fft_size, std::string window_type) {
+
+			if(window_type == "rectangular")
+				return fft::window::rectangular(fft_size);
+			if(window_type ==  "hamming")
+				return fft::window::hamming(fft_size);
+			if(window_type ==  "hann")
+				return fft::window::hann(fft_size);
+			if(window_type ==  "blackman")
+				return fft::window::blackman(fft_size);
+			if(window_type ==  "blackmanharris")
+				return fft::window::blackman_harris(fft_size);
+			if(window_type == "kaiser")
+				return fft::window::kaiser(fft_size, 0);
+			if(window_type == "bartlett")
+				return fft::window::bartlett(fft_size);
+			if(window_type ==  "flattop")
+				return fft::window::flattop(fft_size);
+      		else
+        		throw std::out_of_range("fft file: window type out of range");
 	}
 
-	gr_vector_int spectrum_map::get_spectrum_map_in() const {
-		return d_spectrum_map_in;
+	std::vector<fft_parameters> fft_params::get_list() const {
+		return fft_list;
 	}
-
-	gr_vector_int spectrum_map::get_spectrum_map_out() const {
-		return d_spectrum_map_out;
-	}
-	
-
-
-
-
-
-
-
-
 
   } /* namespace mysvl */
 } /* namespace gr */

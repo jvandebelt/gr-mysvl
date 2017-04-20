@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2016 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2016 Jonathan van de Belt.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,15 +44,18 @@ namespace gr {
 		
 
 	public:
+		spectrum_map();
 		spectrum_map(const char *filename);
 		~spectrum_map();
+
+		void update_filename(const char* filename);
 
 		void open(const char *filename);
 		void close();
 		void read_file();
-
-		gr_vector_int get_spectrum_map_in();
-		gr_vector_int get_spectrum_map_out();
+		int get_size() const;
+		gr_vector_int get_spectrum_map_in() const;
+		gr_vector_int get_spectrum_map_out() const;
 
     };
 

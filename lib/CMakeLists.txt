@@ -29,7 +29,9 @@ list(APPEND mysvl_sources
     weave_impl.cc
     svl_impl.cc
 	spectrum_map.cc
+	read_fft_params.cc
 	hypervisor.cc
+	stream.cc
 )
 
 set(mysvl_sources "${mysvl_sources}" PARENT_SCOPE)

@@ -18,45 +18,58 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_MYSVL_SVL_IMPL_H
-#define INCLUDED_MYSVL_SVL_IMPL_H
+#ifndef INCLUDED_READ_FFT_PARAMS_H
+#define INCLUDED_READ_FFT_PARAMS_H
 
 #include <mysvl/svl.h>
-#include "hypervisor.h"
+#include <boost/thread/mutex.hpp>
+#include <cstring>
+
+struct fft_parameters {
+	bool input;
+	int index;
+	int fft_size;
+	std::vector<float> window;
+};
 
 namespace gr {
   namespace mysvl {
 
-    class svl_impl : public svl
+    class fft_params
     {
 	private:
-		size_t d_itemsize;
-		unsigned int d_blocksize;
-		unsigned int d_ninputs;
-		unsigned int d_noutputs;
-		unsigned int d_factor;
-		unsigned int d_current_input;
-		unsigned int d_current_output;
-		unsigned int d_size_bytes;
-		hypervisor d_hypervisor;
+		//gr_vector_int d_spectrum_map_in;
+		//gr_vector_int d_spectrum_map_out;
+		
+		// From file_source_impl.h
+		FILE *d_fp;
+		FILE *d_new_fp;
+		bool d_updated;
+		boost::mutex fp_mutex;
+
+		std::vector<fft_parameters> fft_list;
+
+		void do_update();
+		
 
 	public:
-		svl_impl(size_t itemsize, unsigned int blocksize, const char *map_filename, const char *fft_filename);
-		~svl_impl();
-		
-		bool check_topology(int ninputs, int noutputs);
+		fft_params();
+		fft_params(const char *filename);
+		~fft_params();
 
-		// Where all the action really happens
-		void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+		void update_filename(const char* filename);
 
-		int general_work(int noutput_items,
-		   gr_vector_int &ninput_items,
-		   gr_vector_const_void_star &input_items,
-		   gr_vector_void_star &output_items);
+		void open(const char *filename);
+		void close();
+		void read_file();
+		std::vector<float> convert_window(int fft_size, std::string window_type);
+		std::vector<fft_parameters> get_list() const;
+		//gr_vector_int get_spectrum_map_out() const;
+
     };
 
   } // namespace mysvl
 } // namespace gr
 
-#endif /* INCLUDED_MYSVL_SVL_IMPL_H */
+#endif /* INCLUDED_READ_FFT_PARAMS_H */
 

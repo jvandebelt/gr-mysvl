@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2016 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2016 Jonathan van de Belt.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 
 #include <mysvl/svl.h>
 #include "spectrum_map.h"
+#include "read_fft_params.h"
+#include "stream.h"
 
 namespace gr {
   namespace mysvl {
@@ -38,10 +40,30 @@ namespace gr {
 		unsigned int d_current_input;
 		unsigned int d_current_output;
 		unsigned int d_size_bytes;*/
+		
+		int d_itemsize;
+		spectrum_map d_map;
+		fft_params d_fft_params;
+		stream_vector d_streams_in;
+		stream_vector d_streams_out;
+		std::vector<std::vector<gr_complex> > d_items_in; // Vector of vector of complex samples
+		std::vector<std::vector<gr_complex> > d_items_out;
+		std::vector<std::vector<gr_complex> > d_frequency_domain_items;
+		
+		//stream d_test_stream;
 
 	public:
-		hypervisor(const char *filename);
+		hypervisor();
+		hypervisor(const char *map_filename, const char *fft_filename, int itemsize);
 		~hypervisor();
+		void print_spectrum_map();
+		void print_complex_samples(int input);
+		bool check_spectrum_map(int ninputs, int noutputs);
+		void create_streams(int ninputs, int noutputs);
+		void work();
+		void do_fft_test();
+		void store_input_stream(int input, unsigned int ninput_items, const gr_complex* in, size_t itemsize);
+		void get_output_stream(int output, unsigned int noutput_items,  gr_complex* out);
 
     };
 

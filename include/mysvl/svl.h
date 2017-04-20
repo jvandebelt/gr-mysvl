@@ -46,7 +46,7 @@ namespace gr {
        * class. mysvl::svl::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t itemsize, unsigned int blocksize, const char *filename);
+      static sptr make(size_t itemsize, unsigned int blocksize, const char *map_filename, const char *fft_filename);
     };
 
   } // namespace mysvl

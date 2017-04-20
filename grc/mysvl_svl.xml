@@ -4,10 +4,10 @@
 	<key>mysvl_svl</key>
 	<category>[mysvl]</category>
 	<import>import mysvl</import>
-	<make>mysvl.svl($type.size*$vlen, $blocksize, $file)</make>
+	<make>mysvl.svl($type.size*$vlen, $blocksize, $spectrum_map, $fft_options)</make>
 	<param>
-		<name>File</name>
-		<key>file</key>
+		<name>Spectrum Map</name>
+		<key>spectrum_map</key>
 		<value></value>
 		<type>file_open</type>
 	</param>
@@ -41,6 +41,12 @@
 			<opt>size:gr.sizeof_char</opt>
 		</option>!-->
 	</param>
+<param>
+		<name>FFT Parameters</name>
+		<key>fft_options</key>
+		<value></value>
+		<type>file_open</type>
+	</param> 
 	<param>
 		<name>Number of Inputs </name>
 		<key>number_inputs</key>
