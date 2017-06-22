@@ -32,6 +32,8 @@ list(APPEND mysvl_sources
 	read_fft_params.cc
 	hypervisor.cc
 	stream.cc
+    stream_demux_impl.cc
+    triggered_demux_impl.cc
 )
 
 set(mysvl_sources "${mysvl_sources}" PARENT_SCOPE)

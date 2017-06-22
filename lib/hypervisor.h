@@ -42,11 +42,13 @@ namespace gr {
 		unsigned int d_size_bytes;*/
 		
 		int d_itemsize;
+		int d_fft_span;
 		spectrum_map d_map;
 		fft_params d_fft_params;
 		stream_vector d_streams_in;
 		stream_vector d_streams_out;
-		std::vector<std::vector<gr_complex> > d_items_in; // Vector of vector of complex samples
+		// Vector of vector of complex samples
+		std::vector<std::vector<gr_complex> > d_items_in;
 		std::vector<std::vector<gr_complex> > d_items_out;
 		std::vector<std::vector<gr_complex> > d_frequency_domain_items;
 		
@@ -57,6 +59,8 @@ namespace gr {
 		hypervisor(const char *map_filename, const char *fft_filename, int itemsize);
 		~hypervisor();
 		void print_spectrum_map();
+		std::vector<fft_parameters> get_fft_list();
+		int get_fft_span();
 		void print_complex_samples(int input);
 		bool check_spectrum_map(int ninputs, int noutputs);
 		void create_streams(int ninputs, int noutputs);

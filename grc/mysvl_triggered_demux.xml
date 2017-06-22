@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<block>
+  <name>Triggered Demux</name>
+  <key>mysvl_triggered_demux</key>
+  <category>[mysvl]</category>
+  <import>import mysvl</import>
+  <make>mysvl.triggered_demux($type.size*$vlen, $trigger_type.size, $lengths, $delay)</make>
+  <param>
+    <name>IO Type</name>
+    <key>type</key>
+    <type>enum</type>
+       <option>
+          <name>Complex</name>
+          <key>complex</key>
+          <opt>size:gr.sizeof_gr_complex</opt>
+        </option>
+        <option>
+          <name>Float</name>
+          <key>float</key>
+          <opt>size:gr.sizeof_float</opt>
+        </option>
+        <option>
+          <name>Int</name>
+          <key>int</key>
+          <opt>size:gr.sizeof_int</opt>
+        </option>
+        <option>
+          <name>Short</name>
+          <key>short</key>
+          <opt>size:gr.sizeof_short</opt>
+        </option>
+        <option>
+          <name>Byte</name>
+          <key>byte</key>
+          <opt>size:gr.sizeof_char</opt>
+	    </option>
+	</param>
+	<param>
+	<name>Trigger Type</name>
+    <key>trigger_type</key>
+    <type>enum</type>
+        <option>
+          <name>Float</name>
+          <key>float</key>
+          <opt>size:gr.sizeof_float</opt>
+        </option>
+        <option>
+          <name>Complex</name>
+          <key>complex</key>
+          <opt>size:gr.sizeof_gr_complex</opt>
+        </option>
+        <option>
+          <name>Int</name>
+          <key>int</key>
+          <opt>size:gr.sizeof_int</opt>
+        </option>
+        <option>
+          <name>Short</name>
+          <key>short</key>
+          <opt>size:gr.sizeof_short</opt>
+        </option>
+        <option>
+          <name>Byte</name>
+          <key>byte</key>
+          <opt>size:gr.sizeof_char</opt>
+	    </option>
+	</param>
+    <param>
+		<name>Lengths</name>
+		<key>lengths</key>
+		<value>1, 1</value>
+		<type>int_vector</type>
+	</param>
+	<param>
+        <name>Delay after trigger</name>
+        <key>delay</key>
+        <value>0</value>
+        <type>int</type>
+    </param>
+	<param>
+        <name>Number of Outputs </name>
+        <key>number_outputs</key>
+        <value>2</value>
+        <type>int</type>
+    </param>
+	<param>
+		<name>Vec Length</name>
+		<key>vlen</key>
+		<value>1</value>
+		<type>int</type>
+	</param>
+    <check>$number_outputs &gt; 0</check>
+	<check>$number_outputs == len($lengths)</check>
+	<check>$vlen &gt; 0</check>
+	<sink>
+		<name>in</name>
+		<type>$type</type>
+		<vlen>$vlen</vlen>
+	</sink>
+	 <sink>
+    <name>trigger</name>
+    <type>$trigger_type</type>
+  </sink>
+	<source>
+		<name>out</name>
+		<type>$type</type>
+		<vlen>$vlen</vlen>
+		<nports>$number_outputs</nports>
+	</source>
+</block>

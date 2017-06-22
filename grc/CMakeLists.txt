@@ -19,5 +19,7 @@
 
 install(FILES
     mysvl_weave.xml
-    mysvl_svl.xml DESTINATION share/gnuradio/grc/blocks
+    mysvl_svl.xml
+    mysvl_stream_demux.xml
+    mysvl_triggered_demux.xml DESTINATION share/gnuradio/grc/blocks
 )

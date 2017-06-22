@@ -23,5 +23,7 @@
 install(FILES
     api.h
     weave.h
-    svl.h DESTINATION include/mysvl
+    svl.h
+    stream_demux.h
+    triggered_demux.h DESTINATION include/mysvl
 )

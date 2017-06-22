@@ -49,8 +49,26 @@ namespace gr {
 			d_itemsize(itemsize), d_blocksize(blocksize), d_current_input(0), d_current_output(0),
 			d_hypervisor(map_filename, fft_filename, itemsize)
     {
-		d_size_bytes = d_itemsize * d_blocksize;
-		set_output_multiple(blocksize);		
+		// check blocksize
+		std::vector<fft_parameters> d_fft_list = d_hypervisor.get_fft_list();
+		int smallest_fft_size=d_fft_list[0].fft_size;
+
+		d_fft_list_in.clear();
+		d_fft_list_out.clear();
+
+		for(int i=0; i<d_fft_list.size(); i++){
+			if(d_fft_list[i].fft_size < smallest_fft_size)
+				smallest_fft_size=d_fft_list[i].fft_size;
+			if(d_fft_list[i].input)
+				d_fft_list_in.push_back(d_fft_list[i]);
+			else
+				d_fft_list_out.push_back(d_fft_list[i]);
+		}
+
+		if(smallest_fft_size < d_blocksize || smallest_fft_size%d_blocksize != 0)
+        	throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
+
+		set_output_multiple(d_hypervisor.get_fft_span());		
 		//d_hypervisor.print_spectrum_map();
 	}
 
@@ -66,12 +84,20 @@ namespace gr {
 	{
 		d_ninputs = ninputs;
 		d_noutputs = noutputs;
-
-		set_relative_rate((double)ninputs/(double)noutputs);
-		d_factor = boost::math::lcm(d_ninputs, d_noutputs);
+		int total_input_size =0;
+		int total_output_size=0;
+            
+        for(int i=0; i<  d_fft_list_in.size(); i++)
+            total_input_size += d_fft_list_in[i].fft_size;
+        for(int i=0; i<  d_fft_list_out.size(); i++)
+            total_output_size += d_fft_list_out[i].fft_size;
+    
+		set_relative_rate((double)total_input_size/(double)total_output_size);
+		//printf("Relative rate: %f", (double)total_input_size/(double)total_output_size);
+		//d_factor = boost::math::lcm(d_ninputs, d_noutputs); //not needed?
 		d_hypervisor.create_streams(ninputs, noutputs);
 		//d_hypervisor.do_fft_test();
-		set_output_multiple(d_blocksize*d_factor);
+		set_output_multiple(d_hypervisor.get_fft_span());  // for each stream or total?
 		if(!d_hypervisor.check_spectrum_map(ninputs, noutputs))
         	throw std::runtime_error("error: inconsistency between configuration and spectrum_map\n");
 		return true;
@@ -80,10 +106,8 @@ namespace gr {
     void
     svl_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      for(unsigned int i = 0; i < ninput_items_required.size(); ++i) {
-		 ninput_items_required[i] = (int) ((noutput_items * d_noutputs
-		/ ninput_items_required.size()) + .5);
-		}
+      	for(unsigned int i = 0; i < ninput_items_required.size(); ++i)	
+		 	ninput_items_required[i] = (int) (noutput_items / d_hypervisor.get_fft_span() *d_fft_list_in[i].fft_size + .5);
     }
 
     int
@@ -105,12 +129,33 @@ namespace gr {
 		const char **in = (const char**) &input_items[0]; // in points to the address of the vector of void pointers.
 		char **out = (char**) &output_items[0];
 
-		int count = 0, totalcount = noutput_items * d_noutputs;
+		int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
+		//printf("Totalcount: %d \n", totalcount);
 		unsigned int acc = 0;
 		unsigned int skip = 0;
 		bool initialized = false;
 		
 		while(count < totalcount) {
+			
+			//printf("Count: %d \n", count);
+
+			for(unsigned int i=0; i<d_ninputs; i++){
+				d_hypervisor.store_input_stream(i, d_fft_list_in[i].fft_size, (gr_complex*) in[i], d_itemsize);
+				in[i] += d_itemsize*d_fft_list_in[i].fft_size;
+				//printf("Input %d, FFT Size: %d", i, d_fft_list_in[i].fft_size);
+				consume(i, d_fft_list_in[i].fft_size);
+			}
+			
+			d_hypervisor.work();
+			
+			for(unsigned int i=0; i<d_noutputs; i++){
+				d_hypervisor.get_output_stream(i, d_fft_list_out[i].fft_size, (gr_complex*) out[i]);
+				out[i] += d_itemsize*d_fft_list_out[i].fft_size;
+				//printf("Output %d, FFT Size: %d", i, d_fft_list_out[i].fft_size);
+				produce(i, d_fft_list_out[i].fft_size);
+			}
+
+			count++;
 
 			//memcpy(out[d_current_output] + skip * d_size_bytes, in[d_current_input], d_size_bytes);
 			//in[d_current_input] += d_size_bytes;
@@ -118,37 +163,41 @@ namespace gr {
 			//d_current_input = (d_current_input + 1) % d_ninputs;		
 			//d_current_output = (d_current_output + 1) % d_noutputs;
 
-			d_hypervisor.store_input_stream(d_current_input, d_blocksize, (gr_complex*) in[d_current_input], d_itemsize);
+			//d_hypervisor.store_input_stream(d_current_input, d_fft_list_in[d_current_input].fft_size, (gr_complex*) in[d_current_input], d_itemsize);
 			
 			//memcpy(out[d_current_output], in[d_current_input], d_size_bytes);
-			in[d_current_input] += d_size_bytes;
-			d_current_input = (d_current_input + 1) % d_ninputs;
+			//in[d_current_input] += d_itemsize*d_fft_list_in[d_current_input].fft_size;
+			//d_current_input = (d_current_input + 1) % d_ninputs;
 
-			d_hypervisor.get_output_stream(d_current_output, d_blocksize, (gr_complex*) out[d_current_output]);
-			produce(d_current_output, d_blocksize);
-			out[d_current_output] += d_size_bytes;
-			d_current_output = (d_current_output + 1) % d_noutputs;
+
 			
 			// in[d_current_input] += d_size_bytes;
 			// accumulate times through the loop; increment skip after a
 			// full pass over the input streams.
 			// This is separate than d_current_output since we could be in
 			// the middle of a loop when we exit.
-			acc++;
+			//acc++;
 
-			if(acc == d_ninputs){
-				acc = 0;
+			//if(acc == d_ninputs){
+			//	acc = 0;
 			
-				d_hypervisor.work();
+				//d_hypervisor.work();
+			//	initialized = true;
 					
-			}
-
+			//}
+			
 			// Keep track of our loop counter
-			count += d_blocksize*d_factor/d_noutputs;
-
+			
+			//	d_hypervisor.get_output_stream(d_current_output, d_fft_list_out[d_current_output].fft_size, (gr_complex*) out[d_current_output]);
+			//	produce(d_current_output, d_fft_list_out[d_current_output].fft_size);
+			//	out[d_current_output] += d_itemsize*d_fft_list_out[d_current_output].fft_size;
+			//	d_current_output = (d_current_output + 1) % d_noutputs;
+			//	count += d_fft_list_out[d_current_output].fft_size;
+			//}
+			
+			
 		}
 
-		consume_each((int)((totalcount/d_ninputs) + .5));
 		return WORK_CALLED_PRODUCE;
     }
 

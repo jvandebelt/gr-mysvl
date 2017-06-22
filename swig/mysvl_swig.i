@@ -15,9 +15,15 @@
 #include "hypervisor.h"
 #include "stream.h"
 #include <gnuradio/fft/fft.h>
+#include "mysvl/stream_demux.h"
+#include "mysvl/triggered_demux.h"
 %}
 
 %include "mysvl/weave.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, weave);
 %include "mysvl/svl.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, svl);
+%include "mysvl/stream_demux.h"
+GR_SWIG_BLOCK_MAGIC2(mysvl, stream_demux);
+%include "mysvl/triggered_demux.h"
+GR_SWIG_BLOCK_MAGIC2(mysvl, triggered_demux);

@@ -29,7 +29,22 @@ namespace gr {
     /*
      * The private constructor
      */
-    hypervisor::hypervisor(const char *map_filename, const char *fft_filename, int itemsize) : d_map(map_filename), d_itemsize(itemsize), d_fft_params(fft_filename) {	
+    hypervisor::hypervisor(const char *map_filename, const char *fft_filename, int itemsize) : d_map(map_filename), d_itemsize(itemsize), d_fft_params(fft_filename) {
+
+		std::vector<fft_parameters>  fft_list = d_fft_params.get_list();
+
+		int input_fft_size=0;
+		int output_fft_size=0;
+
+		for(unsigned int i=0; i<fft_list.size(); i++) {
+			if(fft_list[i].input)
+				input_fft_size+=fft_list[i].fft_size;
+			else
+				output_fft_size+=fft_list[i].fft_size;
+		}
+		if(input_fft_size!=output_fft_size)
+			throw std::invalid_argument("error: inputs and outputs don't match fft file");
+		d_fft_span=input_fft_size; 
 	}
 
 // , d_test_stream(64, true, window, itemsize)
@@ -53,16 +68,23 @@ namespace gr {
 		int fft_inputs = 0;
 		int fft_outputs = 0;
 
-		for(int i=0; i<fft_list.size(); i++) {
+		d_streams_in.clear();
+		d_streams_out.clear();
+		d_items_in.clear();	
+		d_items_out.clear();
+
+		for(unsigned int i=0; i<fft_list.size(); i++) {
 
 			if(fft_list[i].input){ 
 				d_streams_in.emplace_back(new stream(fft_list[i].fft_size, true, fft_list[i].window, d_itemsize));
 				d_items_in.resize(d_items_in.size() + 1);
+				d_items_in[fft_inputs].resize(fft_list[i].fft_size);
 				fft_inputs++;
 			}
 			else {
 				d_streams_out.emplace_back(new stream(fft_list[i].fft_size, false, fft_list[i].window, d_itemsize));
 				d_items_out.resize(d_items_out.size() + 1);
+				d_items_out[fft_outputs].resize(fft_list[i].fft_size);
 				fft_outputs++;
 			}
 		}
@@ -81,6 +103,14 @@ namespace gr {
 		//}
 	}
 	
+	std::vector<fft_parameters> hypervisor::get_fft_list(){
+		return d_fft_params.get_list();
+	}
+
+	int hypervisor::get_fft_span(){
+		return d_fft_span;
+	}
+	
 	void hypervisor::store_input_stream(int input, unsigned int ninput_items, const gr_complex* in, size_t itemsize) {
 		
 		if(d_items_in[input].size() <= d_items_in[input].size() + ninput_items)
@@ -89,7 +119,7 @@ namespace gr {
 		d_items_in[input].insert(d_items_in[input].end(), &in[0], &in[ninput_items*itemsize]);
 		
 		std::copy(&in[0], &in[ninput_items*itemsize], d_items_in[input].begin());
-		d_items_out[input].resize(ninput_items);
+		//d_items_out[input].resize(ninput_items); // this line is making it work somehow
 		//printf("Size of d_items[in]: %d \n", d_items_in[input].size());
 		
 	}
@@ -97,7 +127,7 @@ namespace gr {
 	void hypervisor::get_output_stream(int output, unsigned int noutput_items, gr_complex* out) {
 	
 		std::copy(d_items_out[output].end()-noutput_items, d_items_out[output].end(), out);
-		//d_items_out[output].erase(d_items_out[output].end()-noutput_items, d_items_out[output].end());
+		//d_items_out[output].erase(d_items_out[output].end()-noutput_items, d_items_out[output].end()); 
 	
 	}
 
@@ -107,14 +137,16 @@ namespace gr {
 		gr_vector_int output_map= d_map.get_spectrum_map_out();
 
 		// convert each input stream to frequency domain
-		for(int input=0; input<d_streams_in.size(); input++) {
+		for(unsigned int input=0; input<d_streams_in.size(); input++) {
 
+            float fft_size = (float) d_streams_in[input]->get_fft_size();
+            
 			d_streams_in[input]->work(d_items_in[input], d_items_in[input]);
 		
-			// normalise fft
-			for(int i=0; i<d_items_in[input].size(); i++) {
-				d_items_in[input][i].real(d_items_in[input][i].real()/( (float) d_streams_in[input]->get_fft_size()));
-				d_items_in[input][i].imag(d_items_in[input][i].imag()/( (float) d_streams_in[input]->get_fft_size()));
+			// normalise fft - only need to do this once
+			for(unsigned int i=0; i<d_items_in[input].size(); i++) {
+				d_items_in[input][i].real(d_items_in[input][i].real()/fft_size);
+				d_items_in[input][i].imag(d_items_in[input][i].imag()/fft_size);
 			}	
 		}
 		
@@ -123,13 +155,13 @@ namespace gr {
 		gr_vector_int track_input_locations;
 		gr_vector_int track_output_locations;
 
-		for(int input=0; input<d_streams_in.size(); input++)
+		for(unsigned int input=0; input<d_streams_in.size(); input++)
 			track_input_locations.push_back(0);
 
-		for(int output=0; output<d_streams_out.size(); output++)
+		for(unsigned int output=0; output<d_streams_out.size(); output++)
 			track_output_locations.push_back(0);
 		
-		for(int i=0; i<input_map.size(); i++) {
+		for(unsigned int i=0; i<input_map.size(); i++) {
 			d_items_out[output_map[i]-1][track_output_locations[output_map[i]-1]]=d_items_in[input_map[i]-1][track_input_locations[input_map[i]-1]];
 			track_output_locations[output_map[i]-1]++;
 			track_input_locations[input_map[i]-1]++;
@@ -144,8 +176,11 @@ namespace gr {
 	
 
 		// convert each output stream to time domain
-		for(int output=0; output<d_streams_out.size(); output++) {
+		for(unsigned int output=0; output<d_streams_out.size(); output++) {
 			d_streams_out[output]->work(d_items_out[output], d_items_out[output]);
+		}
+		for(unsigned int input=0; input<d_items_in.size(); input++) {
+		    d_items_in[input].clear();
 		}
 		
 	}
@@ -153,7 +188,7 @@ namespace gr {
 	void hypervisor::print_complex_samples(int input) {
 
 		// Print out is working.
-		for(int i=0; i<d_items_in[input].size(); i++) {
+		for(unsigned int i=0; i<d_items_in[input].size(); i++) {
 			printf("Complex number: %f, %f \n", d_items_in[input][i].real(), d_items_in[input][i].imag());
 		}
 		
@@ -162,7 +197,7 @@ namespace gr {
 	void hypervisor::print_spectrum_map() {
 		
 		printf("Spectrum maps \n");
-		for(int i=0; i<d_map.get_size(); i++) {
+		for(unsigned int i=0; i<d_map.get_size(); i++) {
 			printf("in: %d ", d_map.get_spectrum_map_in()[i]);
 			printf(" out: %d \n", d_map.get_spectrum_map_out()[i]);
 		}
@@ -183,23 +218,23 @@ namespace gr {
 			throw std::invalid_argument("spectrum map error: different input and output sizes"); 
 		
 		// Check that inputs have the same number of samples as fft_size
-		for(int i=0; i < ninputs; i++){
+		for(unsigned int i=0; i < ninputs; i++){
 			int occurances = 0;
-			for(int j=0;j<input_map.size(); j++)
+			for(unsigned int j=0;j<input_map.size(); j++)
 				if(input_map[j]==i)
 					occurances++;
-			for(int k=0; k<fft_list.size(); k++)
+			for(unsigned int k=0; k<fft_list.size(); k++)
 				if(fft_list[k].input && fft_list[k].index == i && occurances!= fft_list[k].fft_size)
 					throw std::invalid_argument("spectrum map error: number of samples for input " + std::to_string(fft_list[k].index)  +" does not match fft file"); 
 		}
 	
 		// Check that outputs have the same number of samples as fft_size
-		for(int i=0; i < noutputs; i++){
+		for(unsigned int i=0; i < noutputs; i++){
 			int occurances = 0;
-			for(int j=0;j<output_map.size(); j++)
+			for(unsigned int j=0;j<output_map.size(); j++)
 				if(output_map[j]==i+1)
 					occurances++;
-			for(int k=0; k<fft_list.size(); k++)
+			for(unsigned int k=0; k<fft_list.size(); k++)
 				if(!fft_list[k].input && fft_list[k].index == i && occurances!= fft_list[k].fft_size)
 					throw std::invalid_argument("spectrum map error: number of samples for output " + std::to_string(fft_list[k].index)  +" does not match fft file"); 
 		}
@@ -226,12 +261,12 @@ namespace gr {
 		
 
 		inputs.resize(1);
-		for(int i=0; i<64; i++) {
+		for(unsigned int i=0; i<64; i++) {
 			inputs[0].push_back(gr_complex(10.0, 10.0));
 		}
 		
 		printf("Inputs \n");
-		for(int i=0; i<inputs[0].size(); i++) {
+		for(unsigned int i=0; i<inputs[0].size(); i++) {
 			//const gr_complex *in= (const gr_complex *) &inputs[0][i];
 			printf("Complex number: %f, %f \n", inputs[0][i].real(), inputs[0][i].imag());
 		}		
@@ -242,14 +277,14 @@ namespace gr {
 		// Something going wrong with a stream of vectors. Memory issues??
 		in[0]->work(inputs[0], outputs[0]);
 
-		for(int i=0; i<outputs[0].size(); i++) {
+		for(unsigned int i=0; i<outputs[0].size(); i++) {
 			outputs[0][i].real(outputs[0][i].real()/256.0);
 			outputs[0][i].imag(outputs[0][i].imag()/256.0);
 
 		}
 		
 		printf("Intermediate \n");
-		for(int i=0; i<outputs[0].size(); i++) {
+		for(unsigned int i=0; i<outputs[0].size(); i++) {
 			//gr_complex *out= (gr_complex *) &outputs[0][i];
 			printf("Complex number: %f, %f \n", outputs[0][i].real(), outputs[0][i].imag());
 		}
@@ -261,7 +296,7 @@ namespace gr {
 		
 
 		printf("Outputs \n");
-		for(int i=0; i<outputs[0].size(); i++) {
+		for(unsigned int i=0; i<outputs[0].size(); i++) {
 			//gr_complex *out= (gr_complex *) &outputs[0][i];
 			printf("Complex number: %f, %f \n", outputs[0][i].real(), outputs[0][i].imag());
 		}
