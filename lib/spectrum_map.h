@@ -23,6 +23,7 @@
 
 #include <mysvl/svl.h>
 #include <boost/thread/mutex.hpp>
+#include <string>
 
 namespace gr {
   namespace mysvl {
@@ -39,6 +40,7 @@ namespace gr {
 		FILE *d_new_fp;
 		bool d_updated;
 		boost::mutex fp_mutex;
+		std::string d_filename;
 
 		void do_update();
 		
@@ -49,6 +51,7 @@ namespace gr {
 		~spectrum_map();
 
 		void update_filename(const char* filename);
+		std::string get_filename();
 
 		void open(const char *filename);
 		void close();

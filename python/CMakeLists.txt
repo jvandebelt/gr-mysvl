@@ -45,3 +45,5 @@ GR_ADD_TEST(qa_weave ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_weave.p
 GR_ADD_TEST(qa_svl ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_svl.py)
 GR_ADD_TEST(qa_stream_demux ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_stream_demux.py)
 GR_ADD_TEST(qa_triggered_demux ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_triggered_demux.py)
+GR_ADD_TEST(qa_corr+freq_offset ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_corr+freq_offset.py)
+GR_ADD_TEST(qa_corr_freq_offset ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_corr_freq_offset.py)

@@ -94,7 +94,8 @@ namespace gr {
 			throw std::invalid_argument("error: inputs and outputs don't match fft file"); 
 		}
 		
-		check_spectrum_map(ninputs, noutputs);
+		if(!check_spectrum_map(ninputs, noutputs))
+        	throw std::runtime_error("error: inconsistency between configuration and spectrum_map\n");
 		//printf("Size of d_streams_in: %d \n", d_streams_in.size());
 
 		//for(int i=0; i<noutputs; i++) {
@@ -221,13 +222,14 @@ namespace gr {
 		for(unsigned int i=0; i < ninputs; i++){
 			int occurances = 0;
 			for(unsigned int j=0;j<input_map.size(); j++)
-				if(input_map[j]==i)
+				if(input_map[j]==i+1)
 					occurances++;
 			for(unsigned int k=0; k<fft_list.size(); k++)
-				if(fft_list[k].input && fft_list[k].index == i && occurances!= fft_list[k].fft_size)
-					throw std::invalid_argument("spectrum map error: number of samples for input " + std::to_string(fft_list[k].index)  +" does not match fft file"); 
+				if(fft_list[k].index == i+1 && fft_list[k].input && occurances!= fft_list[k].fft_size)
+					throw std::invalid_argument("error with spectrum map " + d_map.get_filename() + ": number of samples for input " + std::to_string(fft_list[k].index)  +" does not match fft file");
 		}
 	
+	    
 		// Check that outputs have the same number of samples as fft_size
 		for(unsigned int i=0; i < noutputs; i++){
 			int occurances = 0;
@@ -235,8 +237,8 @@ namespace gr {
 				if(output_map[j]==i+1)
 					occurances++;
 			for(unsigned int k=0; k<fft_list.size(); k++)
-				if(!fft_list[k].input && fft_list[k].index == i && occurances!= fft_list[k].fft_size)
-					throw std::invalid_argument("spectrum map error: number of samples for output " + std::to_string(fft_list[k].index)  +" does not match fft file"); 
+				if(fft_list[k].index == i+1 && !fft_list[k].input && occurances!= fft_list[k].fft_size)
+					throw std::invalid_argument("error with spectrum map " + d_map.get_filename() + ": number of samples for output " + std::to_string(fft_list[k].index)  +" does not match fft file");
 		}
 
 		return true;

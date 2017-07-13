@@ -24,7 +24,6 @@ include(GrPlatform) #define LIB_SUFFIX
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
-
 list(APPEND mysvl_sources
     weave_impl.cc
     svl_impl.cc
@@ -34,7 +33,7 @@ list(APPEND mysvl_sources
 	stream.cc
     stream_demux_impl.cc
     triggered_demux_impl.cc
-)
+    corr_freq_offset_impl.cc )
 
 set(mysvl_sources "${mysvl_sources}" PARENT_SCOPE)
 if(NOT mysvl_sources)

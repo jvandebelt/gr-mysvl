@@ -46,6 +46,7 @@ namespace gr {
 		open(filename);
 		do_update();
 		read_file();
+		d_filename=std::string(filename);
     }
 
     spectrum_map::~spectrum_map() {
@@ -63,7 +64,12 @@ namespace gr {
 		open(filename);
 		do_update();
 		read_file();
+		d_filename=std::string(filename);		
 	}
+	
+	std::string spectrum_map::get_filename() {
+        return d_filename;
+    }
 
 	void
     spectrum_map::open(const char *filename) {

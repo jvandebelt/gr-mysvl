@@ -16,10 +16,10 @@
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
-
 install(FILES
     mysvl_weave.xml
     mysvl_svl.xml
     mysvl_stream_demux.xml
-    mysvl_triggered_demux.xml DESTINATION share/gnuradio/grc/blocks
+    mysvl_triggered_demux.xml
+    mysvl_corr_freq_offset.xml DESTINATION share/gnuradio/grc/blocks
 )

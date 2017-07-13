@@ -148,11 +148,12 @@ namespace gr {
 				}
 				else 
 					input = (bool) num;
-				if(!power_of_two(fft_size)) {
+					// Remove power of 2 contraint
+				//if(!power_of_two(fft_size)) {
 					//GR_LOG_ERROR(d_logger, "error with spectrum map file \n");
-					perror("fft file error: fft_size not a power of 2");
-					throw std::invalid_argument("error with fft file: fft_size not a power of 2");
-				}					
+					//perror("fft file error: fft_size not a power of 2");
+					//throw std::invalid_argument("error with fft file: fft_size not a power of 2");
+				//}					
 
 				fft_parameters temp {input, index, fft_size, convert_window(fft_size, std::string(temp_string))};
 				fft_list.push_back(temp);		
