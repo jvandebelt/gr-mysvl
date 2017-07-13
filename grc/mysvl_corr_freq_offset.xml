@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<block>
+  <name>Correlation and FO</name>
+  <key>mysvl_corr_freq_offset</key>
+  <category>[mysvl]</category>
+  <import>import mysvl</import>
+  <make>mysvl.corr_freq_offset($symbols, $sps, $mark_delay, $threshold)</make>
+  <callback>set_mark_delay($mark_delay)</callback>
+  <callback>set_threshold($threshold)</callback>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Symbols</name>
+    <key>symbols</key>
+    <type>complex_vector</type>
+  </param>
+
+  <param>
+    <name>Samples per Symbol</name>
+    <key>sps</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Tag marking delay</name>
+    <key>mark_delay</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Threshold</name>
+    <key>threshold</key>
+    <value>0.9</value>
+    <type>float</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+
+  <source>
+    <name>corr</name>
+    <type>complex</type>
+    <optional>1</optional>
+  </source>
+</block>
