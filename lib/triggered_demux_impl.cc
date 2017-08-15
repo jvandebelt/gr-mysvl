@@ -62,6 +62,13 @@ namespace gr {
         }
         d_residual = d_lengths[d_stream];
         set_tag_propagation_policy(TPP_DONT);
+        
+        int sum_lengths=0;
+        
+        for(int i=0;i<d_lengths.size(); i++)
+            sum_lengths += d_lengths[i];
+        
+        set_output_multiple(sum_lengths);
     }
 
     /*
