@@ -50,7 +50,7 @@ namespace gr {
 		// Vector of vector of complex samples
 		std::vector<std::vector<gr_complex> > d_items_in;
 		std::vector<std::vector<gr_complex> > d_items_out;
-		std::vector<std::vector<gr_complex> > d_frequency_domain_items;
+		//std::vector<std::vector<gr_complex> > d_frequency_domain_items;
 		
 		//stream d_test_stream;
 

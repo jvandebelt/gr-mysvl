@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-	<name>svl</name>
+	<name>MySVL</name>
 	<key>mysvl_svl</key>
 	<category>[mysvl]</category>
 	<import>import mysvl</import>

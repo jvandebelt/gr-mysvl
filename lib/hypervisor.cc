@@ -214,7 +214,7 @@ namespace gr {
 
 		std::vector<fft_parameters>  fft_list = d_fft_params.get_list();
 		
-		// Check that input span equals output span. Does this have to be true?
+		// Check that input span equals output span.
 		if(input_map.size()!=output_map.size())
 			throw std::invalid_argument("spectrum map error: different input and output sizes"); 
 		
@@ -245,7 +245,7 @@ namespace gr {
 	}
 	
 
-		// Test to make sure FFT is working
+/*		// Test to make sure FFT is working
 	void hypervisor::do_fft_test() {
 
 		std::vector<std::vector < gr_complex > > inputs;
@@ -303,9 +303,10 @@ namespace gr {
 			printf("Complex number: %f, %f \n", outputs[0][i].real(), outputs[0][i].imag());
 		}
 		
-
+    
 
 	}
+	*/
 	
   } /* namespace mysvl */
 } /* namespace gr */

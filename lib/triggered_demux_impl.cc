@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 Jonathan van de Belt
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,6 +163,9 @@ namespace gr {
 	        d_stream = (d_stream+1) % d_lengths.size();
 	      } while (d_lengths[d_stream] == 0);
               d_residual = d_lengths[d_stream];
+              if(d_stream == 1){
+	            add_item_tag(1, nitems_written(1) +output_index[1], pmt::intern("trigger"),
+                     pmt::from_double(output_index[1]));}
         } 
       }
       //printf("items in: %d\n", items_in);

@@ -93,12 +93,13 @@ namespace gr {
         for(int i=0; i<  d_fft_list_out.size(); i++)
             total_output_size += d_fft_list_out[i].fft_size;
     
-		set_relative_rate((double)total_input_size/(double)total_output_size);
+		//set_relative_rate((double)total_input_size/(double)total_output_size);
 		//printf("Relative rate: %f", (double)total_input_size/(double)total_output_size);
 		//d_factor = boost::math::lcm(d_ninputs, d_noutputs); //not needed?
 		d_hypervisor.create_streams(ninputs, noutputs);
 		//d_hypervisor.do_fft_test();
-		set_output_multiple(d_hypervisor.get_fft_span());  
+		set_output_multiple(d_hypervisor.get_fft_span());
+		//printf("Hypervisor span: %d \n", d_hypervisor.get_fft_span());  
 		//if(!d_hypervisor.check_spectrum_map(ninputs, noutputs))
         	//throw std::runtime_error("error: inconsistency between configuration and spectrum_map\n");
 		return true;
@@ -107,8 +108,12 @@ namespace gr {
     void
     svl_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      	for(unsigned int i = 0; i < ninput_items_required.size(); ++i)	
+        //GR_LOG_INFO(d_logger, "MySVL");
+        //printf("Output items %d \n", noutput_items);
+      	for(unsigned int i = 0; i < ninput_items_required.size(); ++i){
 		 	ninput_items_required[i] = (int) (noutput_items / d_hypervisor.get_fft_span() *d_fft_list_in[i].fft_size + .5);
+		 	//printf("Number of items required for input %d is %d \n", i, ninput_items_required[i]);
+		 	}
     }
 
     int
@@ -130,11 +135,27 @@ namespace gr {
 		const char **in = (const char**) &input_items[0]; // in points to the address of the vector of void pointers.
 		char **out = (char**) &output_items[0];
 
-		int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
+		//int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
 		//printf("Totalcount: %d \n", totalcount);
 		unsigned int acc = 0;
 		unsigned int skip = 0;
 		bool initialized = false;
+		
+		
+		std::vector<tag_t> tags;
+        get_tags_in_range(tags, 0, 0, noutput_items,
+                        pmt::intern("trigger"));
+                        
+        if(tags.size() > 0) {
+            if(tags[0].offset > 0) {
+              in[0] += d_itemsize*tags[0].offset;
+              noutput_items -= tags[0].offset;
+              tags.erase(tags.begin());
+              }
+        }
+        
+        int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
+        
 		
 		while(count < totalcount) {
 			

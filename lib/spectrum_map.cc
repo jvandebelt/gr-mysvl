@@ -140,7 +140,10 @@ namespace gr {
 			d_spectrum_span++;
 			//printf("%i",d_spectrum_map[d_spectrum_span-1]);
 		}
-*/
+*/      
+        d_spectrum_map_in.clear();
+        d_spectrum_map_out.clear();
+        
 		while(fscanf((FILE*)d_fp,"%d%d", &input_num, &output_num) != EOF) {
 				d_spectrum_map_in.push_back(input_num);
 				d_spectrum_map_out.push_back(output_num);

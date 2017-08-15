@@ -35,8 +35,6 @@ namespace gr {
 		size_t 					d_fft_size;
 		std::vector<float>    	d_window;
 		bool 					d_forward;
-		float 					d_central_frequency;
-		float 					d_bandwidth;	
 		int 					d_itemsize;
 
 	public:

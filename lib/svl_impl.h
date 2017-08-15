@@ -34,7 +34,6 @@ namespace gr {
 		unsigned int d_blocksize;
 		unsigned int d_ninputs;
 		unsigned int d_noutputs;
-		unsigned int d_factor;
 		unsigned int d_current_input;
 		unsigned int d_current_output;
 		unsigned int d_size_bytes;
