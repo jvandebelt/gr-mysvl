@@ -149,8 +149,7 @@ namespace gr {
         if(tags.size() > 0) {
             if(tags[0].offset > 0) {
               in[0] += d_itemsize*tags[0].offset;
-              noutput_items -= tags[0].offset;
-              tags.erase(tags.begin());
+              //tags.erase(tags.begin());
               }
         }
         
