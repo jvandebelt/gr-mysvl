@@ -55,6 +55,9 @@ namespace gr {
 
 		d_fft_list_in.clear();
 		d_fft_list_out.clear();
+		d_buffer_items=0;
+		//d_buffer_input=0;
+		//d_buffer_remaining=0;
 
 		for(int i=0; i<d_fft_list.size(); i++){
 			if(d_fft_list[i].fft_size < smallest_fft_size)
@@ -140,21 +143,44 @@ namespace gr {
 		unsigned int acc = 0;
 		unsigned int skip = 0;
 		bool initialized = false;
+		int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
 		
 		
 		std::vector<tag_t> tags;
         get_tags_in_range(tags, 0, 0, noutput_items,
                         pmt::intern("trigger"));
-                        
+              
+        /*                
         if(tags.size() > 0) {
-            if(tags[0].offset > 0) {   
+            if(tags[0].offset > 0) {
+               if(tags[0].offset + d_buffer_items == d_hypervisor.get_fft_span()) {
+               
+                   d_hypervisor.store_input_stream(0, tags[0].offset, (gr_complex*) in[0], d_itemsize);
+				    in[0] += d_itemsize*tags[0].offset;
+				    consume(0, tags[0].offset);
+				    
+				    d_hypervisor.work();
+			
+			        for(unsigned int i=0; i<d_noutputs; i++){
+				        d_hypervisor.get_output_stream(i, d_fft_list_out[i].fft_size, (gr_complex*) out[i]);
+				        out[i] += d_itemsize*d_fft_list_out[i].fft_size;
+				        //printf("Output %d, FFT Size: %d", i, d_fft_list_out[i].fft_size);
+				        produce(i, d_fft_list_out[i].fft_size);
+			        }
+			        
+			        d_buffer_items=0;
+			        count++;
+               }
+               else{ 
                 in[0] += d_itemsize*tags[0].offset; // drop first samples
                 consume(0, d_itemsize*tags[0].offset);
                 noutput_items -= tags[0].offset;            
+                }
              }
         }
+        */
                 
-        int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
+        
 		while(count < totalcount) {
 			
 			//printf("Count: %d \n", count);
@@ -216,23 +242,19 @@ namespace gr {
 			//}
 			
 			
-		}
-        
-        /*
-        if(tags[0].offset > 0) {
-            if(ninput_items-nitems_read(0)+tags[0].offset==d_hypervisor.get_fft_span()){
-                int offset=tags[0].offset;
-            
-                for(unsigned int i=0; i<d_ninputs; i++){ 
-				    d_hypervisor.store_input_stream(i, d_fft_list_in[i].fft_size-d_buffer_items, (gr_complex*) in[i], d_itemsize);
-				    in[i] += d_itemsize*d_fft_list_in[i].fft_size-d_buffer_items;
-				    //printf("Input %d, FFT Size: %d", i, d_fft_list_in[i].fft_size);
-				    consume(i, d_fft_list_in[i].fft_size-d_buffer_items);
-			   }
-            
+		}     
+		
+		 if(tags.size() > 0) {
+            if(tags[0].offset > 0) {
+                printf("Items remaining: %d\n", ninput_items[0]-nitems_read(0));
+            //if(ninput_items[0]%d_hypervisor.get_fft_span()==0){
+                    //d_buffer_items=d_hypervisor.get_fft_span()-tags[0].offset;
+                    //printf("d_buffer_items: %d\n",d_buffer_items);
+				    //d_hypervisor.store_input_stream(0, d_buffer_items, (gr_complex*) in[0], d_itemsize);
+				    ///in[0] += d_itemsize*d_buffer_items;
+				    //consume(0, d_buffer_items); 
             }
         }
-        */
 
 		return WORK_CALLED_PRODUCE;
     }
