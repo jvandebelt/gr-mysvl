@@ -55,7 +55,6 @@ namespace gr {
 
 		d_fft_list_in.clear();
 		d_fft_list_out.clear();
-		d_buffer_items=0;
 
 		for(int i=0; i<d_fft_list.size(); i++){
 			if(d_fft_list[i].fft_size < smallest_fft_size)
