@@ -55,6 +55,7 @@ namespace gr {
 
 		d_fft_list_in.clear();
 		d_fft_list_out.clear();
+		d_buffer_items=0;
 
 		for(int i=0; i<d_fft_list.size(); i++){
 			if(d_fft_list[i].fft_size < smallest_fft_size)
@@ -147,14 +148,13 @@ namespace gr {
                         pmt::intern("trigger"));
                         
         if(tags.size() > 0) {
-            if(tags[0].offset%d_hypervisor.get_fft_span() > 0) {
-              in[0] += d_itemsize*tags[0].offset%d_hypervisor.get_fft_span();
-              }
+            if(tags[0].offset > 0) {   
+                in[0] += d_itemsize*tags[0].offset; // drop first samples
+                consume(0, d_itemsize*tags[0].offset);              
+             }
         }
-        
+                
         int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
-        
-		
 		while(count < totalcount) {
 			
 			//printf("Count: %d \n", count);
@@ -217,6 +217,22 @@ namespace gr {
 			
 			
 		}
+        
+        /*
+        if(tags[0].offset > 0) {
+            if(ninput_items-nitems_read(0)+tags[0].offset==d_hypervisor.get_fft_span()){
+                int offset=tags[0].offset;
+            
+                for(unsigned int i=0; i<d_ninputs; i++){ 
+				    d_hypervisor.store_input_stream(i, d_fft_list_in[i].fft_size-d_buffer_items, (gr_complex*) in[i], d_itemsize);
+				    in[i] += d_itemsize*d_fft_list_in[i].fft_size-d_buffer_items;
+				    //printf("Input %d, FFT Size: %d", i, d_fft_list_in[i].fft_size);
+				    consume(i, d_fft_list_in[i].fft_size-d_buffer_items);
+			   }
+            
+            }
+        }
+        */
 
 		return WORK_CALLED_PRODUCE;
     }
