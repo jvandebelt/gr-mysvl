@@ -69,7 +69,7 @@ namespace gr {
 		//if(smallest_fft_size < d_blocksize || smallest_fft_size%d_blocksize != 0)
         	//throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
 
-		//set_output_multiple(d_hypervisor.get_fft_span());		
+		set_output_multiple(d_hypervisor.get_fft_span());		
 		//d_hypervisor.print_spectrum_map();
 	}
 
@@ -98,7 +98,7 @@ namespace gr {
 		//d_factor = boost::math::lcm(d_ninputs, d_noutputs); //not needed?
 		d_hypervisor.create_streams(ninputs, noutputs);
 		//d_hypervisor.do_fft_test();
-		//set_output_multiple(d_hypervisor.get_fft_span());
+		set_output_multiple(d_hypervisor.get_fft_span());
 		//printf("Hypervisor span: %d \n", d_hypervisor.get_fft_span());  
 		//if(!d_hypervisor.check_spectrum_map(ninputs, noutputs))
         	//throw std::runtime_error("error: inconsistency between configuration and spectrum_map\n");
@@ -147,10 +147,8 @@ namespace gr {
                         pmt::intern("trigger"));
                         
         if(tags.size() > 0) {
-        //printf("Tags offset: %d", tags[0].offset);
-            if(tags[0].offset > 0) {
-              in[0] += d_itemsize*tags[0].offset;
-              //noutput_items -= tags[0].offset;
+            if(tags[0].offset%d_hypervisor.get_fft_span() > 0) {
+              in[0] += d_itemsize*tags[0].offset%d_hypervisor.get_fft_span();
               }
         }
         
