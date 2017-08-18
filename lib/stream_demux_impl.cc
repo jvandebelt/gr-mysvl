@@ -30,22 +30,22 @@ namespace gr {
   namespace mysvl {
 
     stream_demux::sptr
-    stream_demux::make(size_t itemsize, const std::vector<int> &lengths)
+    stream_demux::make(size_t itemsize, const std::vector<int> &lengths, bool add_tags)
     {
       return gnuradio::get_initial_sptr
-        (new stream_demux_impl(itemsize, lengths));
+        (new stream_demux_impl(itemsize, lengths, add_tags));
     }
 
     /*
      * The private constructor
      */
-    stream_demux_impl::stream_demux_impl(size_t itemsize, const std::vector<int> &lengths)
+    stream_demux_impl::stream_demux_impl(size_t itemsize, const std::vector<int> &lengths, bool add_tags)
       : gr::block("stream_demux",
               gr::io_signature::make(1, 1, itemsize),
               gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize)),
             d_itemsize(itemsize),
 	        d_stream(0),
-	        d_residual(0),
+	        d_add_tags(add_tags),
 	        d_lengths(lengths)
     {    
         while (d_lengths[d_stream] == 0) {
@@ -54,7 +54,6 @@ namespace gr {
                 throw std::invalid_argument("At least one size must be non-zero.");
             }
         }
-        d_residual = d_lengths[d_stream];
         set_tag_propagation_policy(TPP_DONT);
     }
 
@@ -68,7 +67,7 @@ namespace gr {
     void
     stream_demux_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = noutput_items;
+        ninput_items_required[0] = noutput_items;
     }
 
     int
@@ -81,45 +80,42 @@ namespace gr {
       char *out;
       
       int items_in = 0; // Items in
+      int items_out = 0; // Total items out
       gr_vector_int output_index(d_lengths.size(), 0); // Items written
-      std::vector<gr::tag_t> stream_t;      
+      std::vector<gr::tag_t> stream_t;  
       
-      while (items_in < noutput_items) {
-                
-        int space_left_in_buffers = std::min(
-              noutput_items - items_in, // Space left in output buffer
-              ninput_items[0] - items_in  // Space left in input buffer
-        );
-        int items_to_copy = std::min(
-            space_left_in_buffers,
-            d_residual
-        );
-                
-        out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;
-        memcpy(out, &in[items_in*d_itemsize], items_to_copy*d_itemsize);
-        
-        get_tags_in_window(stream_t, 0,items_in, items_in + items_to_copy);
-        BOOST_FOREACH(gr::tag_t t, stream_t){
-          t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
-          add_item_tag(d_stream, t);
-        }
-        
-        items_in += items_to_copy;
-        output_index[d_stream] += items_to_copy;
-        d_residual -= items_to_copy;
-        
-        if (d_residual == 0) {
-	      do { // Skip all those outputs with zero length
-	        d_stream = (d_stream+1) % d_lengths.size();
-	      } while (d_lengths[d_stream] == 0);
-              d_residual = d_lengths[d_stream];
-        } else {
-          break;
-        }
- 
-      }
-      
-      for (size_t i = 0; i < output_index.size(); i++) {
+      while (ninput_items[0]-items_in >d_lengths[d_stream] && noutput_items-items_out >d_lengths[d_stream]) {
+            gr::thread::scoped_lock guard(d_setlock);
+            
+            out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
+                          
+            memcpy(out, &in[items_in*d_itemsize], d_lengths[d_stream]*d_itemsize);
+            
+            if(d_add_tags){
+              add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_lengths[d_stream]));       
+            }
+            
+            // propagate existing tags
+            get_tags_in_window(stream_t, 0,items_in, items_in + d_lengths[d_stream]);
+            BOOST_FOREACH(gr::tag_t t, stream_t){
+              t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
+              add_item_tag(d_stream, t);
+            }
+            
+            output_index[d_stream] += d_lengths[d_stream];
+            items_out += d_lengths[d_stream];                
+            items_in += d_lengths[d_stream];
+            
+            
+            do { // Skip all those outputs with zero length
+                d_stream = (d_stream+1) % d_lengths.size();
+              } while (d_lengths[d_stream] == 0);
+        } 
+            
+            // Save any remaining samples
+            set_history(ninput_items[0]-items_in);
+    
+      for(int i = 0; i < output_index.size(); i++) {
 	    produce((int) i, output_index[i]);
       }
            

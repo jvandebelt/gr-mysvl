@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 Jonathan van de Belt
+ * Copyright 2017 <+YOU OR YOUR COMPANY+>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_MYSVL_STREAM_DEMUX_IMPL_H
-#define INCLUDED_MYSVL_STREAM_DEMUX_IMPL_H
+#ifndef INCLUDED_MYSVL_MYSVL_SYNC_IMPL_H
+#define INCLUDED_MYSVL_MYSVL_SYNC_IMPL_H
 
-#include <mysvl/stream_demux.h>
+#include <mysvl/mysvl_sync.h>
+#include "hypervisor.h"
 
 namespace gr {
   namespace mysvl {
 
-    class stream_demux_impl : public stream_demux
+    class mysvl_sync_impl : public mysvl_sync
     {
      private:
-      size_t d_itemsize;
-      unsigned int d_stream;    // index of currently selected stream
-      //int d_residual;           // number if items left to put into current stream
-      gr_vector_int d_lengths;  // number if items to pack per stream
-      bool d_add_tags;
+		size_t d_itemsize;
+		unsigned int d_blocksize;
+		unsigned int d_ninputs;
+		unsigned int d_noutputs;
+		unsigned int d_current_input;
+		unsigned int d_current_output;
+		unsigned int d_size_bytes;
+		hypervisor d_hypervisor;
+		unsigned int d_buffer_items;
+		std::vector<fft_parameters> d_fft_list_in;
+		std::vector<fft_parameters> d_fft_list_out;
+
+     protected:
+      int calculate_output_stream_length(const gr_vector_int &ninput_items);
 
      public:
-      stream_demux_impl(size_t itemsize, const std::vector<int> &lengths, bool add_tags);
-      ~stream_demux_impl();
+      mysvl_sync_impl(size_t itemsize, unsigned int blocksize, const char *map_filename, const char *fft_filename, const std::string& lengthtagname);
+      ~mysvl_sync_impl();
+		
+		bool check_topology(int ninputs, int noutputs);
 
       // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int general_work(int noutput_items,
+      int work(int noutput_items,
            gr_vector_int &ninput_items,
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
@@ -51,5 +61,5 @@ namespace gr {
   } // namespace mysvl
 } // namespace gr
 
-#endif /* INCLUDED_MYSVL_STREAM_DEMUX_IMPL_H */
+#endif /* INCLUDED_MYSVL_MYSVL_SYNC_IMPL_H */
 

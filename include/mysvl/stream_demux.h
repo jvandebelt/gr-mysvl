@@ -46,7 +46,7 @@ namespace gr {
        * class. mysvl::stream_demux::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t itemsize, const std::vector<int> &lengths);
+      static sptr make(size_t itemsize, const std::vector<int> &lengths, bool add_tags);
     };
 
   } // namespace mysvl

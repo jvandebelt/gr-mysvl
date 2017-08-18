@@ -30,21 +30,21 @@ namespace gr {
     {
      private:
       size_t d_itemsize;
-      size_t d_trigger_size; 
+      size_t d_trigger_size;
       unsigned int d_stream;    // index of currently selected stream
-      int d_residual;           // number if items left to put into current stream
       gr_vector_int d_lengths;  // number if items to pack per stream
       int d_trigger_delay;      // add a delay between the trigger point and the sync point
-      int d_offset;
       bool d_reset;
-      int d_iteration;
-      int d_delay_left;
+      int d_next_packet_length;
+      bool d_add_tags;
       float d_last_sample;
+      int d_delay_left;
+      int d_min_output_items;
       
       int find_trigger_offset(int start, int end, const float *trigger_signal);
       
      public:
-      triggered_demux_impl(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay);
+      triggered_demux_impl(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay, bool add_tags);
       ~triggered_demux_impl();
 
       // Where all the action really happens

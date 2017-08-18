@@ -29,30 +29,29 @@ namespace gr {
   namespace mysvl {
 
     triggered_demux::sptr
-    triggered_demux::make(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay)
+    triggered_demux::make(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay, bool add_tags)
     {
       return gnuradio::get_initial_sptr
-        (new triggered_demux_impl(itemsize, trigger_size, lengths, trigger_delay));
+        (new triggered_demux_impl(itemsize, trigger_size, lengths, trigger_delay, add_tags));
     }
     
     /*
      * The private constructor
      */
-    triggered_demux_impl::triggered_demux_impl(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay)
+    triggered_demux_impl::triggered_demux_impl(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay, bool add_tags)
       : gr::block("triggered_demux",
               gr::io_signature::make2(1, 2, itemsize, trigger_size),
               gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize)),
               d_itemsize(itemsize),
               d_trigger_size(trigger_size),
 	          d_stream(0),
-	          d_residual(0),
 	          d_trigger_delay(trigger_delay),
 	          d_lengths(lengths),
-	          d_reset(false),
-	          d_offset(0),
-	          d_iteration(0),
-	          d_delay_left(0),
-	          d_last_sample(0.0)
+	          d_add_tags(add_tags),
+	          d_next_packet_length(0),
+	          d_last_sample(0.0),
+	          d_min_output_items(0),
+	          d_reset(false)
     {   
         while (d_lengths[d_stream] == 0) {
             d_stream++;
@@ -60,8 +59,12 @@ namespace gr {
                 throw std::invalid_argument("At least one size must be non-zero.");
             }
         }
-        d_residual = d_lengths[d_stream];
         set_tag_propagation_policy(TPP_DONT);
+       
+        for(int i=0; i< d_lengths.size();i++) {
+            d_min_output_items += d_lengths[i];
+            }
+        set_output_multiple(d_min_output_items);
     }
 
     /*
@@ -87,90 +90,83 @@ namespace gr {
       const char *in = (const char *) input_items[0];
       const float *trigger = (const float *) input_items[1];
       char *out;
-             
-      //printf("Iteration: %d\n", d_iteration);
-      d_iteration++;
-      
+                  
       int items_in = 0; // Items in
+      int items_out = 0; // Total items out
       gr_vector_int output_index(d_lengths.size(), 0); // Items written
-      std::vector<gr::tag_t> stream_t;    
+      std::vector<gr::tag_t> stream_t;  
+      d_next_packet_length=d_lengths[d_stream];
       
-      if(d_delay_left > 0 && d_delay_left < noutput_items) {
-        d_offset=d_delay_left;
-        d_delay_left=0; 
-      }
-      else if(d_delay_left > 0) {
-        d_offset=noutput_items;
-        d_delay_left-=noutput_items;      
-      }
+      //printf("Output items: %d\n", noutput_items);   
       
-      //printf("output items: %d\n", noutput_items);
-      //printf("Delay left %d\n", d_delay_left);
+      /*
       
-      while (items_in < noutput_items) {
-        
-        //printf("items in: %d\n", items_in);
-        
-        if(!d_reset){
-            d_offset = find_trigger_offset(items_in, noutput_items, trigger);
-            if(d_reset) {
-                //printf("Trigger found at %d\n", d_offset);
-                if(d_offset + d_trigger_delay <= noutput_items)
-                    d_offset +=d_trigger_delay;
-                else {
-                    d_delay_left = d_offset + d_trigger_delay - noutput_items;
-                    d_offset=noutput_items;
-                    //printf("Delay left %d\n", d_delay_left);               
+      */
+      
+          
+      while (noutput_items-items_out >=d_lengths[d_stream] && ninput_items[0]-items_in >=d_lengths[d_stream] && ninput_items[1]-items_in >=d_lengths[d_stream]) {
+            gr::thread::scoped_lock guard(d_setlock);
+            
+            if(d_delay_left > 0 && d_delay_left <= d_lengths[d_stream]) {
+                d_next_packet_length=d_delay_left;
+                d_delay_left=0; 
+            }
+            else if(d_delay_left > 0) {
+                d_next_packet_length= d_lengths[d_stream];
+                d_delay_left -= d_lengths[d_stream];      
+            }
+            
+            if(!d_reset) {  
+                d_next_packet_length = find_trigger_offset(items_in, items_in+d_lengths[d_stream], trigger) - items_in;  
+                //printf("Offset found at %d for stream %d\n", items_in + d_next_packet_length, d_stream);        
+                if(d_reset) {
+                    if(d_next_packet_length + d_trigger_delay <= d_lengths[d_stream])                
+                       d_next_packet_length +=d_trigger_delay;
+                    else{
+                        d_delay_left=d_next_packet_length+d_trigger_delay-d_lengths[d_stream];
+                        d_next_packet_length = d_lengths[d_stream];}
                 }
             }
-        }
-           
-        int space_left_in_buffers = std::min(
-              d_offset - items_in, // Space left in output buffer
-              ninput_items[0] - items_in  // Space left in input buffer
-        );
-        int items_to_copy = std::min(
-            space_left_in_buffers,
-            d_residual
-        );
-                
-        out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;
-        memcpy(out, &in[items_in*d_itemsize], items_to_copy*d_itemsize);
-        
-        get_tags_in_window(stream_t, 0,items_in, items_in + items_to_copy);
-        BOOST_FOREACH(gr::tag_t t, stream_t){
-          t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
-          add_item_tag(d_stream, t);
-        }
-        
-        items_in += items_to_copy;
-        output_index[d_stream] += items_to_copy;
-        d_residual -= items_to_copy;
-        
-        if(d_reset && items_in == d_offset && d_delay_left ==0) {
-            //printf("Reset\n");
-            //printf("items in: %d\n", items_in);
-            d_reset = false;
-            d_stream = 0;
-            d_residual = d_lengths[d_stream];
+                        
+            //printf("Next packet length %d\n", d_next_packet_length);
             
-            // Why does reset break out of main while loop??
-            // Maybe it doesn't
-        }
-        
-        if (d_residual == 0) {
-	      do { // Skip all those outputs with zero length
-	        d_stream = (d_stream+1) % d_lengths.size();
-	      } while (d_lengths[d_stream] == 0);
-              d_residual = d_lengths[d_stream];
-              if(d_stream == 1){
-	            add_item_tag(1, nitems_written(1) +output_index[1], pmt::intern("trigger"),
-                     pmt::from_double(output_index[1]));}
+            //if(d_delay_left)
+                //printf("Delay left: %d\n", d_delay_left);  
+                                  
+            out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
+                          
+            memcpy(out, &in[items_in*d_itemsize], d_next_packet_length*d_itemsize);
+            
+            if(d_add_tags){
+              add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_next_packet_length));       
+            }
+            
+            // repeat existing tags
+            get_tags_in_window(stream_t, 0,items_in, items_in + d_next_packet_length);
+            BOOST_FOREACH(gr::tag_t t, stream_t){
+              t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
+              add_item_tag(d_stream, t);
+            }
+            
+            output_index[d_stream] += d_next_packet_length;
+            items_out += d_next_packet_length;                
+            items_in += d_next_packet_length;
+                        
+            do { // Skip all those outputs with zero length
+                d_stream = (d_stream+1) % d_lengths.size();
+              } while (d_lengths[d_stream] == 0);
+              
+            if(d_reset && d_delay_left ==0) {
+                d_reset = false;
+                d_stream = 0;
+            }
         } 
-      }
-      //printf("items in: %d\n", items_in);
-      
-      for (size_t i = 0; i < output_index.size(); i++) {
+            
+            // Save any remaining samples
+            
+            set_history(std::min(ninput_items[0], ninput_items[1])-items_in);
+    
+      for(int i = 0; i < output_index.size(); i++) {
 	    produce((int) i, output_index[i]);
       }
            
@@ -179,7 +175,7 @@ namespace gr {
       // Tell runtime system how many output items we produced.
       return WORK_CALLED_PRODUCE;
     }
-    
+                  
     int triggered_demux_impl::find_trigger_offset(int start, int end, const float *trigger_signal){
     
       // printf("Start is %d, end is %d\n", start, end);
@@ -205,6 +201,7 @@ namespace gr {
         d_last_sample = trigger_signal[end-1];
         return offset;
     }
+    
 
   } /* namespace mysvl */
 } /* namespace gr */

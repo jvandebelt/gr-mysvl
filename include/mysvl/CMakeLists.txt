@@ -24,7 +24,8 @@ install(FILES
     api.h
     weave.h
     svl.h
-    stream_demux.h
     triggered_demux.h
-    corr_freq_offset.h DESTINATION include/mysvl
+    corr_freq_offset.h
+    mysvl_sync.h
+    stream_demux.h DESTINATION include/mysvl
 )

@@ -145,10 +145,9 @@ namespace gr {
 		bool initialized = false;
 		int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
 		
-		
-		std::vector<tag_t> tags;
-        get_tags_in_range(tags, 0, 0, noutput_items,
-                        pmt::intern("trigger"));
+		//std::vector<tag_t> tags;
+        //get_tags_in_range(tags, 0, 0, noutput_items,
+        //                pmt::intern("trigger"));
               
         /*                
         if(tags.size() > 0) {
@@ -180,7 +179,6 @@ namespace gr {
         }
         */
                 
-        
 		while(count < totalcount) {
 			
 			//printf("Count: %d \n", count);
@@ -244,18 +242,6 @@ namespace gr {
 			
 		}     
 		
-		 if(tags.size() > 0) {
-            if(tags[0].offset > 0) {
-                printf("Items remaining: %d\n", ninput_items[0]-nitems_read(0));
-            //if(ninput_items[0]%d_hypervisor.get_fft_span()==0){
-                    //d_buffer_items=d_hypervisor.get_fft_span()-tags[0].offset;
-                    //printf("d_buffer_items: %d\n",d_buffer_items);
-				    //d_hypervisor.store_input_stream(0, d_buffer_items, (gr_complex*) in[0], d_itemsize);
-				    ///in[0] += d_itemsize*d_buffer_items;
-				    //consume(0, d_buffer_items); 
-            }
-        }
-
 		return WORK_CALLED_PRODUCE;
     }
 

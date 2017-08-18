@@ -4,7 +4,7 @@
   <key>mysvl_triggered_demux</key>
   <category>[mysvl]</category>
   <import>import mysvl</import>
-  <make>mysvl.triggered_demux($type.size*$vlen, $trigger_type.size, $lengths, $delay)</make>
+  <make>mysvl.triggered_demux($type.size*$vlen, $trigger_type.size, $lengths, $delay, $tags)</make>
   <param>
     <name>IO Type</name>
     <key>type</key>
@@ -71,6 +71,20 @@
 		<value>1, 1</value>
 		<type>int_vector</type>
 	</param>
+	<param>
+      <name>Add Tags?</name>
+      <key>tags</key>
+      <value>False</value>
+      <type>enum</type>
+         <option>
+          <name>No</name>
+          <key>False</key>
+         </option>
+         <option>
+          <name>Yes</name>
+          <key>True</key>
+        </option>
+  </param>
 	<param>
         <name>Delay after trigger</name>
         <key>delay</key>

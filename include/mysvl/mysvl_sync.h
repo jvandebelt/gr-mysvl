@@ -19,11 +19,11 @@
  */
 
 
-#ifndef INCLUDED_MYSVL_TRIGGERED_DEMUX_H
-#define INCLUDED_MYSVL_TRIGGERED_DEMUX_H
+#ifndef INCLUDED_MYSVL_MYSVL_SYNC_H
+#define INCLUDED_MYSVL_MYSVL_SYNC_H
 
 #include <mysvl/api.h>
-#include <gnuradio/block.h>
+#include <gnuradio/tagged_stream_block.h>
 
 namespace gr {
   namespace mysvl {
@@ -33,24 +33,24 @@ namespace gr {
      * \ingroup mysvl
      *
      */
-    class MYSVL_API triggered_demux : virtual public gr::block
+    class MYSVL_API mysvl_sync : virtual public gr::tagged_stream_block
     {
      public:
-      typedef boost::shared_ptr<triggered_demux> sptr;
+      typedef boost::shared_ptr<mysvl_sync> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of mysvl::triggered_demux.
+       * \brief Return a shared_ptr to a new instance of mysvl::mysvl_sync.
        *
-       * To avoid accidental use of raw pointers, mysvl::triggered_demux's
+       * To avoid accidental use of raw pointers, mysvl::mysvl_sync's
        * constructor is in a private implementation
-       * class. mysvl::triggered_demux::make is the public interface for
+       * class. mysvl::mysvl_sync::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t itemsize, size_t trigger_size, const std::vector<int> &lengths, int trigger_delay, bool add_tags);
+      static sptr make(size_t itemsize, unsigned int blocksize, const char *map_filename, const char *fft_filename, const std::string& lengthtagname);
     };
 
   } // namespace mysvl
 } // namespace gr
 
-#endif /* INCLUDED_MYSVL_TRIGGERED_DEMUX_H */
+#endif /* INCLUDED_MYSVL_MYSVL_SYNC_H */
 

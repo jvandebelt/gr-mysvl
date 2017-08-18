@@ -4,7 +4,7 @@
   <key>mysvl_stream_demux</key>
   <category>[mysvl]</category>
   <import>import mysvl</import>
-  <make>mysvl.stream_demux($type.size*$vlen, $lengths)</make>
+  <make>mysvl.stream_demux($type.size*$vlen, $lengths, $tags)</make>
   <param>
     <name>IO Type</name>
     <key>type</key>
@@ -35,12 +35,26 @@
           <opt>size:gr.sizeof_char</opt>
 	    </option>
 	</param>
-	<param>
+    <param>
 		<name>Lengths</name>
 		<key>lengths</key>
 		<value>1, 1</value>
 		<type>int_vector</type>
 	</param>
+	<param>
+      <name>Add Tags?</name>
+      <key>tags</key>
+      <value>False</value>
+      <type>enum</type>
+         <option>
+          <name>No</name>
+          <key>False</key>
+         </option>
+         <option>
+          <name>Yes</name>
+          <key>True</key>
+        </option>
+  </param>
 	<param>
         <name>Number of Outputs </name>
         <key>number_outputs</key>

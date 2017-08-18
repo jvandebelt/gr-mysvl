@@ -31,9 +31,10 @@ list(APPEND mysvl_sources
 	read_fft_params.cc
 	hypervisor.cc
 	stream.cc
-    stream_demux_impl.cc
     triggered_demux_impl.cc
-    corr_freq_offset_impl.cc )
+    corr_freq_offset_impl.cc
+    mysvl_sync_impl.cc
+    stream_demux_impl.cc )
 
 set(mysvl_sources "${mysvl_sources}" PARENT_SCOPE)
 if(NOT mysvl_sources)
