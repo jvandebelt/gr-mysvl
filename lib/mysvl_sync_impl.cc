@@ -72,7 +72,8 @@ namespace gr {
 		//if(smallest_fft_size < d_blocksize || smallest_fft_size%d_blocksize != 0)
         	//throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
 
-		//set_output_multiple(d_hypervisor.get_fft_span());		
+		//set_output_multiple(d_hypervisor.get_fft_span());
+		//set_relative_rate(1.0);		
 		//d_hypervisor.print_spectrum_map();
 	}
     /*
