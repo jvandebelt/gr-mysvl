@@ -73,7 +73,7 @@ namespace gr {
         	//throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
 
 		set_output_multiple(d_hypervisor.get_fft_span());
-		set_max_noutput_items(d_hypervisor.get_fft_span()*4);
+		set_max_noutput_items(4096);
 		set_relative_rate(1.0);		
 		//d_hypervisor.print_spectrum_map();
 	}
@@ -103,7 +103,7 @@ namespace gr {
 		d_hypervisor.create_streams(ninputs, noutputs);
 		//d_hypervisor.do_fft_test();
 		set_output_multiple(d_hypervisor.get_fft_span());
-		set_max_noutput_items(d_hypervisor.get_fft_span()*4);
+		set_max_noutput_items(4096);
 		//printf("Hypervisor span: %d \n", d_hypervisor.get_fft_span());  
 		//if(!d_hypervisor.check_spectrum_map(ninputs, noutputs))
         	//throw std::runtime_error("error: inconsistency between configuration and spectrum_map\n");
