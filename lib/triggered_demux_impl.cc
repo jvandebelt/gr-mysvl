@@ -50,6 +50,7 @@ namespace gr {
 	          d_add_tags(add_tags),
 	          d_next_packet_length(0),
 	          d_last_sample(0.0),
+	          //d_history(0),
 	          d_min_output_items(0),
 	          d_reset(false)
     {   
@@ -65,6 +66,7 @@ namespace gr {
             d_min_output_items += d_lengths[i];
             }
         set_output_multiple(d_min_output_items);
+        //set_max_output_buffer(d_min_output_items*16);
     }
 
     /*
@@ -96,6 +98,8 @@ namespace gr {
       gr_vector_int output_index(d_lengths.size(), 0); // Items written
       std::vector<gr::tag_t> stream_t;  
       d_next_packet_length=d_lengths[d_stream];
+      //ninput_items[0] += d_history;
+      //ninput_items[1] += d_history;
       
       //printf("Output items: %d\n", noutput_items);   
       
@@ -164,7 +168,8 @@ namespace gr {
             
             // Save any remaining samples
             
-            set_history(std::min(ninput_items[0], ninput_items[1])-items_in);
+      set_history(std::min(ninput_items[0], ninput_items[1])-items_in);
+      //d_history = std::min(ninput_items[0], ninput_items[1])-items_in;
     
       for(int i = 0; i < output_index.size(); i++) {
 	    produce((int) i, output_index[i]);

@@ -40,6 +40,7 @@ namespace gr {
       float d_last_sample;
       int d_delay_left;
       int d_min_output_items;
+      //int d_history;
       
       int find_trigger_offset(int start, int end, const float *trigger_signal);
       
