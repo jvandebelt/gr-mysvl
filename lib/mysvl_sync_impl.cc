@@ -74,7 +74,7 @@ namespace gr {
 
 		set_output_multiple(d_hypervisor.get_fft_span());
 		set_max_noutput_items(4096);
-		set_relative_rate(1.0);		
+		//set_relative_rate(1.0);		
 		//d_hypervisor.print_spectrum_map();
 	}
     /*
