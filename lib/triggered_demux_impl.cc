@@ -65,7 +65,7 @@ namespace gr {
         for(int i=0; i< d_lengths.size();i++) {
             d_min_output_items += d_lengths[i];
             }
-        set_output_multiple(d_min_output_items);
+        //set_output_multiple(d_min_output_items);
         //set_max_output_buffer(d_min_output_items*16);
     }
 

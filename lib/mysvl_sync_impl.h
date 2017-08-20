@@ -38,7 +38,6 @@ namespace gr {
 		unsigned int d_current_output;
 		unsigned int d_size_bytes;
 		hypervisor d_hypervisor;
-		unsigned int d_buffer_items;
 		std::vector<fft_parameters> d_fft_list_in;
 		std::vector<fft_parameters> d_fft_list_out;
 
