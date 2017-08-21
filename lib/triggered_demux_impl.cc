@@ -136,33 +136,38 @@ namespace gr {
             
             //if(d_delay_left)
                 //printf("Delay left: %d\n", d_delay_left);  
-                                  
-            out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
-                          
-            memcpy(out, &in[items_in*d_itemsize], d_next_packet_length*d_itemsize);
             
-            if(d_add_tags){
-              add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_next_packet_length));       
-            }
+            if(d_next_packet_length == d_lengths[d_stream]) {                      
+                out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
+                              
+                memcpy(out, &in[items_in*d_itemsize], d_next_packet_length*d_itemsize);
+                
+                if(d_add_tags){
+                  add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_next_packet_length));       
+                }
             
             // repeat existing tags
-            get_tags_in_window(stream_t, 0,items_in, items_in + d_next_packet_length);
-            BOOST_FOREACH(gr::tag_t t, stream_t){
-              t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
-              add_item_tag(d_stream, t);
-            }
-            
-            output_index[d_stream] += d_next_packet_length;
-            items_out += d_next_packet_length;                
-            items_in += d_next_packet_length;
+                get_tags_in_window(stream_t, 0,items_in, items_in + d_next_packet_length);
+                BOOST_FOREACH(gr::tag_t t, stream_t){
+                  t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
+                  add_item_tag(d_stream, t);
+                }
+                
+                output_index[d_stream] += d_next_packet_length;
+                items_out += d_next_packet_length;                
+                items_in += d_next_packet_length;
                         
-            do { // Skip all those outputs with zero length
-                d_stream = (d_stream+1) % d_lengths.size();
-              } while (d_lengths[d_stream] == 0);
-              
-            if(d_reset && d_delay_left ==0) {
-                d_reset = false;
-                d_stream = 0;
+                do { // Skip all those outputs with zero length
+                    d_stream = (d_stream+1) % d_lengths.size();
+                  } while (d_lengths[d_stream] == 0);
+                  
+                if(d_reset && d_delay_left ==0) {
+                    d_reset = false;
+                    d_stream = 0;
+                }
+            }
+            else {
+                items_in += d_next_packet_length;
             }
         } 
             
