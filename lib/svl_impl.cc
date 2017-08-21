@@ -32,30 +32,31 @@ namespace gr {
 
     svl::sptr
     svl::make(size_t itemsize, unsigned int blocksize, const char *map_filename,
-			 const char *fft_filename)
+			 const char *fft_filename, unsigned int packet_size)
     { 
 		return gnuradio::get_initial_sptr
-			(new svl_impl(itemsize, blocksize, map_filename, fft_filename));
+			(new svl_impl(itemsize, blocksize, map_filename, fft_filename, packet_size));
     }
 
     /*
      * The private constructor
      */
     svl_impl::svl_impl(size_t itemsize, unsigned int blocksize, const char *map_filename, 
-				const char *fft_filename )
+				const char *fft_filename, unsigned int packet_size )
       : gr::block("svl",
 			gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize),
 			gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize)),
 			d_itemsize(itemsize), d_blocksize(blocksize), d_current_input(0), d_current_output(0),
-			d_hypervisor(map_filename, fft_filename, itemsize)
+			d_hypervisor(map_filename, fft_filename, itemsize),
+			d_packet_size(packet_size)
     {
 		// check blocksize
 		std::vector<fft_parameters> d_fft_list = d_hypervisor.get_fft_list();
 		int smallest_fft_size=d_fft_list[0].fft_size;
+		set_tag_propagation_policy(TPP_DONT);
 
 		d_fft_list_in.clear();
 		d_fft_list_out.clear();
-		d_buffer_items=0;
 		//d_buffer_input=0;
 		//d_buffer_remaining=0;
 
@@ -72,7 +73,7 @@ namespace gr {
 		//if(smallest_fft_size < d_blocksize || smallest_fft_size%d_blocksize != 0)
         	//throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
 
-		set_output_multiple(d_hypervisor.get_fft_span());		
+		set_output_multiple(packet_size);		
 		//d_hypervisor.print_spectrum_map();
 	}
 
@@ -114,7 +115,7 @@ namespace gr {
         //GR_LOG_INFO(d_logger, "MySVL");
         //printf("Output items %d \n", noutput_items);
       	for(unsigned int i = 0; i < ninput_items_required.size(); ++i){
-		 	ninput_items_required[i] = (int) (noutput_items / d_hypervisor.get_fft_span() *d_fft_list_in[i].fft_size + .5);
+		 	ninput_items_required[i] = (int) (noutput_items * d_fft_list_in[i].fft_size / d_hypervisor.get_fft_span()  + .5);
 		 	//printf("Number of items required for input %d is %d \n", i, ninput_items_required[i]);
 		 	}
     }
@@ -142,17 +143,25 @@ namespace gr {
 		//printf("Totalcount: %d \n", totalcount);
 		unsigned int acc = 0;
 		unsigned int skip = 0;
-		bool initialized = false;
+		int ntags=0;
 		int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
 		
-		//std::vector<tag_t> tags;
-        //get_tags_in_range(tags, 0, 0, noutput_items,
-        //                pmt::intern("trigger"));
+		std::vector<tag_t> tags;
+        get_tags_in_range(tags, 0, 0, noutput_items, pmt::intern("trigger"));
               
-        /*                
-        if(tags.size() > 0) {
-            if(tags[0].offset > 0) {
-               if(tags[0].offset + d_buffer_items == d_hypervisor.get_fft_span()) {
+        if(tags.size()>0) {     
+            //printf("tag offset/fft span: %d\n",tags[0].offset%d_hypervisor.get_fft_span());
+            if(tags[0].offset%d_hypervisor.get_fft_span() != 0) {
+                printf("Unsynchronized tag. Dropping %d samples\n", tags[0].offset);
+                consume(0, tags[0].offset);
+                set_history(ninput_items[0]-tags[0].offset);
+                return 0;
+            }
+        }
+
+                        /*
+            
+               if(tags[0].offset +  == d_hypervisor.get_fft_span()) {
                
                    d_hypervisor.store_input_stream(0, tags[0].offset, (gr_complex*) in[0], d_itemsize);
 				    in[0] += d_itemsize*tags[0].offset;
@@ -167,7 +176,7 @@ namespace gr {
 				        produce(i, d_fft_list_out[i].fft_size);
 			        }
 			        
-			        d_buffer_items=0;
+			        =0;
 			        count++;
                }
                else{ 
@@ -177,9 +186,24 @@ namespace gr {
                 }
              }
         }
+        
         */
                 
 		while(count < totalcount) {
+		
+		/*
+	        if(ntags<tags.size() && tags[ntags].offset/d_hypervisor.get_fft_span() == count) {
+	            if(tags[ntags].offset%d_hypervisor.get_fft_span() != 0) {
+	                printf("Invalid tag %d. Dropping %d samples\n", ntags, tags[ntags].offset%d_hypervisor.get_fft_span());
+	                consume(0, tags[ntags].offset);
+                    set_history(ninput_items[0]-tags[ntags].offset);
+                    return WORK_CALLED_PRODUCE;
+                }
+	        }
+	        
+	        */
+
+
 			
 			//printf("Count: %d \n", count);
 

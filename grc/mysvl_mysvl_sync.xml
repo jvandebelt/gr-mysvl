@@ -4,7 +4,7 @@
   <key>mysvl_mysvl_sync</key>
   <category>[mysvl]</category>
   <import>import mysvl</import>
-  <make>mysvl.mysvl_sync($type.size*$vlen, $blocksize, $spectrum_map, $fft_options,$lengthtagname)</make>
+  <make>mysvl.mysvl_sync($type.size*$vlen, $blocksize, $spectrum_map, $fft_options,$lengthtagname, $packet_size)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name
@@ -55,7 +55,7 @@
 	<param>
     <name>Length tag name</name>
        <key>lengthtagname</key>
-       <value>"packet_len"</value>
+       <value>"trigger"</value>
        <type>string</type>
   </param>
 	<param>
@@ -76,6 +76,12 @@
 		<value>1</value>
 		<type>int</type>
 		<hide>part</hide>
+	</param>
+	<param>
+		<name>Packet Size</name>
+		<key>packet_size</key>
+		<value>1024</value>
+		<type>int</type>
 	</param>
 	<param>
 		<name>Vec Length</name>

@@ -65,7 +65,7 @@ namespace gr {
         for(int i=0; i< d_lengths.size();i++) {
             d_min_output_items += d_lengths[i];
             }
-        //set_output_multiple(d_min_output_items);
+        set_output_multiple(d_min_output_items);
         //set_max_output_buffer(d_min_output_items*16);
     }
 
@@ -101,7 +101,9 @@ namespace gr {
       //ninput_items[0] += d_history;
       //ninput_items[1] += d_history;
       
-      //printf("Output items: %d\n", noutput_items);   
+      //printf("Input items[0]: %d\n", ninput_items[0]);
+      //printf("Input items[1]: %d\n", ninput_items[1]); 
+      //printf("Output items: %d\n", noutput_items); 
       
       /*
       
@@ -120,16 +122,14 @@ namespace gr {
                 d_delay_left -= d_lengths[d_stream];      
             }
             
-            if(!d_reset) {  
-                d_next_packet_length = find_trigger_offset(items_in, items_in+d_lengths[d_stream], trigger) - items_in;  
-                //printf("Offset found at %d for stream %d\n", items_in + d_next_packet_length, d_stream);        
-                if(d_reset) {
-                    if(d_next_packet_length + d_trigger_delay <= d_lengths[d_stream])                
-                       d_next_packet_length +=d_trigger_delay;
-                    else{
-                        d_delay_left=d_next_packet_length+d_trigger_delay-d_lengths[d_stream];
-                        d_next_packet_length = d_lengths[d_stream];}
-                }
+            d_next_packet_length = find_trigger_offset(items_in, items_in+d_lengths[d_stream], trigger) - items_in;  
+            //printf("Offset found at %d\n", items_in + d_next_packet_length);        
+            if(d_reset) {
+                if(d_next_packet_length + d_trigger_delay <= d_lengths[d_stream])                
+                   d_next_packet_length +=d_trigger_delay;
+                else{
+                    d_delay_left=d_next_packet_length+d_trigger_delay-d_lengths[d_stream];
+                    d_next_packet_length = d_lengths[d_stream];}
             }
                         
             //printf("Next packet length %d\n", d_next_packet_length);
@@ -170,12 +170,15 @@ namespace gr {
             
       set_history(std::min(ninput_items[0], ninput_items[1])-items_in);
       //d_history = std::min(ninput_items[0], ninput_items[1])-items_in;
+      
+      //printf("In: %d, Out: %d\n", items_in, items_out);   
     
       for(int i = 0; i < output_index.size(); i++) {
 	    produce((int) i, output_index[i]);
       }
            
-      consume_each(items_in);
+      consume(0, items_in);
+      consume(1, items_in);
       
       // Tell runtime system how many output items we produced.
       return WORK_CALLED_PRODUCE;

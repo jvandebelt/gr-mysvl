@@ -33,21 +33,21 @@ namespace gr {
 
     mysvl_sync::sptr
     mysvl_sync::make(size_t itemsize, unsigned int blocksize, const char *map_filename,
-			 const char *fft_filename, const std::string &lengthtagname)
+			 const char *fft_filename, const std::string &lengthtagname, unsigned int packet_size)
     {
       return gnuradio::get_initial_sptr
-        (new mysvl_sync_impl(itemsize, blocksize, map_filename, fft_filename, lengthtagname));
+        (new mysvl_sync_impl(itemsize, blocksize, map_filename, fft_filename, lengthtagname, packet_size));
     }
 
     /*
      * The private constructor
      */
     mysvl_sync_impl::mysvl_sync_impl(size_t itemsize, unsigned int blocksize, const char *map_filename,
-			 const char *fft_filename, const std::string &lengthtagname)
+			 const char *fft_filename, const std::string &lengthtagname, unsigned int packet_size)
       : gr::tagged_stream_block("mysvl_sync",
               gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize),
               gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize), lengthtagname),
-			d_itemsize(itemsize), d_blocksize(blocksize), d_current_input(0), d_current_output(0),
+			d_itemsize(itemsize), d_blocksize(blocksize), d_current_input(0), d_current_output(0), d_packet_size(packet_size),
 			d_hypervisor(map_filename, fft_filename, itemsize)
     {
 		// check blocksize
@@ -72,8 +72,8 @@ namespace gr {
 		//if(smallest_fft_size < d_blocksize || smallest_fft_size%d_blocksize != 0)
         	//throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
 
-		set_output_multiple(d_hypervisor.get_fft_span());
-		set_max_noutput_items(4096);
+		//set_output_multiple(d_hypervisor.get_fft_span());
+		//set_max_noutput_items(4096);
 		//set_relative_rate(1.0);		
 		//d_hypervisor.print_spectrum_map();
 	}
@@ -102,8 +102,8 @@ namespace gr {
 		//d_factor = boost::math::lcm(d_ninputs, d_noutputs); //not needed?
 		d_hypervisor.create_streams(ninputs, noutputs);
 		//d_hypervisor.do_fft_test();
-		set_output_multiple(d_hypervisor.get_fft_span());
-		set_max_noutput_items(4096);
+		//set_output_multiple(d_hypervisor.get_fft_span());
+		//set_max_noutput_items(4096);
 		//printf("Hypervisor span: %d \n", d_hypervisor.get_fft_span());  
 		//if(!d_hypervisor.check_spectrum_map(ninputs, noutputs))
         	//throw std::runtime_error("error: inconsistency between configuration and spectrum_map\n");
@@ -113,11 +113,20 @@ namespace gr {
     int
     mysvl_sync_impl::calculate_output_stream_length(const gr_vector_int &ninput_items)
     {
-      int noutput_items =0;
+      int noutput_items = ninput_items[0];
+      
+      /*
+      int smallest_factor = ninput_items[0]/d_hypervisor.get_fft_span();
+      
+      for(int i=0; i< ninput_items.size(); i++) {
+          if(ninput_items[i]/d_hypervisor.get_fft_span() < smallest_factor) {
+              smallest_factor = ninput_items[i]/d_hypervisor.get_fft_span();
+          }
+      }
       
       for(int i=0; i <ninput_items.size();i++){
-            noutput_items += ninput_items[i];
-      }
+            noutput_items += smallest_factor*d_fft_list_in[i].fft_size;
+      }*/
       return noutput_items ;
     }
 
@@ -131,7 +140,7 @@ namespace gr {
 		char **out = (char**) &output_items[0];
 
 		//int count = 0, totalcount = noutput_items/d_hypervisor.get_fft_span();
-		//printf("Totalcount: %d \n", totalcount);
+		//printf("Items in: %d, items out: %d \n", ninput_items[0], noutput_items);
 		unsigned int acc = 0;
 		unsigned int skip = 0;
 		bool initialized = false;
