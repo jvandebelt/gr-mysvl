@@ -38,14 +38,13 @@ namespace gr {
 		unsigned int d_current_output;
 		unsigned int d_size_bytes;
 		hypervisor d_hypervisor;
-		unsigned int d_packet_size;
 		//unsigned int d_buffer_input;
 		//unsigned int d_buffer_remaining;
 		std::vector<fft_parameters> d_fft_list_in;
 		std::vector<fft_parameters> d_fft_list_out;
 
 	public:
-		svl_impl(size_t itemsize, unsigned int blocksize, const char *map_filename, const char *fft_filename, unsigned int packet_size);
+		svl_impl(size_t itemsize, unsigned int blocksize, const char *map_filename, const char *fft_filename);
 		~svl_impl();
 		
 		bool check_topology(int ninputs, int noutputs);

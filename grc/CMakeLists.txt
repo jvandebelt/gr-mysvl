@@ -21,6 +21,5 @@ install(FILES
     mysvl_svl.xml
     mysvl_triggered_demux.xml
     mysvl_corr_freq_offset.xml
-    mysvl_mysvl_sync.xml
     mysvl_stream_demux.xml DESTINATION share/gnuradio/grc/blocks
 )

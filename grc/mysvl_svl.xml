@@ -4,7 +4,7 @@
 	<key>mysvl_svl</key>
 	<category>[mysvl]</category>
 	<import>import mysvl</import>
-	<make>mysvl.svl($type.size*$vlen, $blocksize, $spectrum_map, $fft_options, $packet_size)</make>
+	<make>mysvl.svl($type.size*$vlen, $blocksize, $spectrum_map, $fft_options)</make>
 	<param>
 		<name>Spectrum Map</name>
 		<key>spectrum_map</key>
@@ -65,12 +65,6 @@
 		<value>1</value>
 		<type>int</type>
 		<hide>part</hide>
-	</param>
-	<param>
-		<name>Packet Size</name>
-		<key>packet_size</key>
-		<value>1024</value>
-		<type>int</type>
 	</param>
 	<param>
 		<name>Vec Length</name>

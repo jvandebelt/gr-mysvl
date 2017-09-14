@@ -32,23 +32,22 @@ namespace gr {
 
     svl::sptr
     svl::make(size_t itemsize, unsigned int blocksize, const char *map_filename,
-			 const char *fft_filename, unsigned int packet_size)
+			 const char *fft_filename)
     { 
 		return gnuradio::get_initial_sptr
-			(new svl_impl(itemsize, blocksize, map_filename, fft_filename, packet_size));
+			(new svl_impl(itemsize, blocksize, map_filename, fft_filename));
     }
 
     /*
      * The private constructor
      */
     svl_impl::svl_impl(size_t itemsize, unsigned int blocksize, const char *map_filename, 
-				const char *fft_filename, unsigned int packet_size )
+				const char *fft_filename )
       : gr::block("svl",
 			gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize),
 			gr::io_signature::make(1, io_signature::IO_INFINITE, itemsize)),
 			d_itemsize(itemsize), d_blocksize(blocksize), d_current_input(0), d_current_output(0),
-			d_hypervisor(map_filename, fft_filename, itemsize),
-			d_packet_size(packet_size)
+			d_hypervisor(map_filename, fft_filename, itemsize)
     {
 		// check blocksize
 		std::vector<fft_parameters> d_fft_list = d_hypervisor.get_fft_list();
@@ -73,7 +72,7 @@ namespace gr {
 		//if(smallest_fft_size < d_blocksize || smallest_fft_size%d_blocksize != 0)
         	//throw std::runtime_error("error: blocksize must be an equal or smaller power of two than smallest fft size\n");
 
-		set_output_multiple(packet_size);		
+		set_output_multiple(d_hypervisor.get_fft_span());		
 		//d_hypervisor.print_spectrum_map();
 	}
 

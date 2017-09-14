@@ -17,7 +17,6 @@
 #include <gnuradio/fft/fft.h>
 #include "mysvl/triggered_demux.h"
 #include "mysvl/corr_freq_offset.h"
-#include "mysvl/mysvl_sync.h"
 #include "mysvl/stream_demux.h"
 %}
 
@@ -31,8 +30,6 @@ GR_SWIG_BLOCK_MAGIC2(mysvl, triggered_demux);
 
 %include "mysvl/corr_freq_offset.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, corr_freq_offset);
-
-%include "mysvl/mysvl_sync.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, mysvl_sync);
 
 %include "mysvl/stream_demux.h"
