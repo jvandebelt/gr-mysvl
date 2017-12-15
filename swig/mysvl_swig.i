@@ -30,7 +30,6 @@ GR_SWIG_BLOCK_MAGIC2(mysvl, triggered_demux);
 
 %include "mysvl/corr_freq_offset.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, corr_freq_offset);
-GR_SWIG_BLOCK_MAGIC2(mysvl, mysvl_sync);
 
 %include "mysvl/stream_demux.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, stream_demux);
