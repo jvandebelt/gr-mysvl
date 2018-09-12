@@ -23,7 +23,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include <boost/math/common_factor_rt.hpp>
+#include <boost/integer/common_factor_rt.hpp>
 #include "weave_impl.h"
 
 namespace gr {
@@ -62,7 +62,7 @@ namespace gr {
 		set_relative_rate((double)ninputs/(double)noutputs);
 		d_ninputs = ninputs;
 		d_noutputs = noutputs;
-		set_output_multiple(d_blocksize * boost::math::lcm(d_ninputs, d_noutputs));
+		set_output_multiple(d_blocksize * boost::integer::lcm(d_ninputs, d_noutputs));
 		return true;
 	}
 
@@ -73,7 +73,7 @@ namespace gr {
 			 ninput_items_required[i] = (int) ((noutput_items * d_noutputs
 			/ ninput_items_required.size()) + .5);
 		}
-    }		
+    }
 
     int
     weave_impl::general_work (int noutput_items,
@@ -81,7 +81,7 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-			
+
 		const char **in = (const char**) &input_items[0];
 		char **out = (char**) &output_items[0];
 

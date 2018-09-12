@@ -26,5 +26,7 @@ install(FILES
     svl.h
     triggered_demux.h
     corr_freq_offset.h
-    stream_demux.h DESTINATION include/mysvl
+    stream_demux.h
+    mysvl_tx.h
+    mysvl_rx.h DESTINATION include/mysvl
 )

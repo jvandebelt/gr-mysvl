@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <block>
-	<name>MySVL</name>
-	<key>mysvl_svl</key>
-	<category>[mysvl]</category>
-	<import>import mysvl</import>
-	<make>mysvl.svl($type.size*$vlen, $blocksize, $spectrum_map, $fft_options)</make>
-	<param>
+  <name>MySVL Rx</name>
+  <key>mysvl_mysvl_rx</key>
+  <category>[mysvl]</category>
+  <import>import mysvl</import>
+  <make>mysvl.mysvl_rx($type.size*$vlen, $blocksize, $spectrum_map, $fft_options)</make>
+  	<param>
 		<name>Spectrum Map</name>
 		<key>spectrum_map</key>
 		<value></value>
@@ -77,26 +77,26 @@
 	<check>$number_outputs &gt; 0</check>
 	<check>$vlen &gt;= 1</check>
 
-	<!-- Make one 'sink' node per input. Sub-nodes:
-	   * name (an identifier for the GUI)
-	   * type
-	   * vlen
-	   * optional (set to 1 for optional inputs) -->
-	<sink>
-		<name>in</name>
-		<type>$type</type>
-		<vlen>$vlen</vlen>
-		<nports>$number_inputs</nports>
-	</sink>
-	<!-- Make one 'source' node per output. Sub-nodes:
-	   * name (an identifier for the GUI)
-	   * type
-	   * vlen
-	   * optional (set to 1 for optional inputs) -->
-	<source>
-		<name>out</name>
-		<type>$type</type>
-		<vlen>$vlen</vlen>
-		<nports>$number_outputs</nports>
-	</source> 
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+	<type>$type</type>
+	<vlen>$vlen</vlen>
+	<nports>$number_inputs</nports>
+  </sink>
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <source>
+    <name>out</name>
+	<type>$type</type>
+	<vlen>$vlen</vlen>
+	<nports>$number_outputs</nports>
+  </source>
 </block>

@@ -1,17 +1,17 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2017 <+YOU OR YOUR COMPANY+>.
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -171,13 +171,13 @@ namespace gr {
       _set_mark_delay(d_stashed_mark_delay);
       _set_threshold(d_stashed_threshold);
     }
-    
+
     unsigned int
     corr_freq_offset_impl::mark_delay() const
     {
       return d_mark_delay;
     }
-    
+
      void
     corr_freq_offset_impl::_set_mark_delay(unsigned int mark_delay)
     {
@@ -194,7 +194,7 @@ namespace gr {
         d_mark_delay = mark_delay;
       }
     }
-    
+
     void
     corr_freq_offset_impl::set_mark_delay(unsigned int mark_delay)
     {
@@ -275,11 +275,11 @@ namespace gr {
                (d_corr_mag[i] < d_corr_mag[i+1])) {
           i++;
         }
-        
+
         // Start from here. Need to get the samples matching to the preamble. 
         // Use delay variable to solve?
-        
-               
+
+
         // Delaying the primary signal output by the matched filter
         // length using history(), means that the the peak output of
         // the matched filter aligns with the start of the desired
