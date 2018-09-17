@@ -6,12 +6,6 @@
 	<import>import mysvl</import>
 	<make>mysvl.svl($type.size*$vlen, $blocksize, $spectrum_map, $fft_options)</make>
 	<param>
-		<name>Spectrum Map</name>
-		<key>spectrum_map</key>
-		<value></value>
-		<type>file_open</type>
-	</param>
-	<param>
 		<name>IO Type</name>
 		<key>type</key>
 		<type>enum</type>
@@ -47,6 +41,12 @@
 		<value></value>
 		<type>file_open</type>
 	</param> 
+	<param>
+		<name>Spectrum Map</name>
+		<key>spectrum_map</key>
+		<value></value>
+		<type>file_open</type>
+	</param>
 	<param>
 		<name>Number of Inputs </name>
 		<key>number_inputs</key>
