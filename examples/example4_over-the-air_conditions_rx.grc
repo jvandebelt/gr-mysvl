@@ -402,7 +402,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(968, 92)</value>
+      <value>(968, 108)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -434,7 +434,7 @@
     </param>
     <param>
       <key>psize</key>
-      <value>1472*32</value>
+      <value>1472*16</value>
     </param>
     <param>
       <key>port</key>
@@ -611,7 +611,8 @@
     </param>
     <param>
       <key>comment</key>
-      <value>Try out some of the other spectrum maps too.</value>
+      <value>Try out some of the other spectrum maps too.
+Specifically, try example 1b.</value>
     </param>
     <param>
       <key>affinity</key>
@@ -659,7 +660,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>./inputs/spectrum_maps/example1a_rx.txt</value>
+      <value>./inputs/spectrum_maps/example1b_rx.txt</value>
     </param>
     <param>
       <key>vlen</key>

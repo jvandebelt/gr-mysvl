@@ -89,7 +89,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>0.</value>
+      <value>0</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -113,7 +113,7 @@
     </param>
     <param>
       <key>label</key>
-      <value>freq_offset</value>
+      <value>Freq offset</value>
     </param>
     <param>
       <key>min_len</key>
@@ -203,7 +203,7 @@
     </param>
     <param>
       <key>label</key>
-      <value>noise</value>
+      <value>Noise</value>
     </param>
     <param>
       <key>min_len</key>
@@ -259,6 +259,69 @@
     <param>
       <key>value</key>
       <value>1000000</value>
+    </param>
+  </block>
+  <block>
+    <key>variable_qtgui_range</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 476)</value>
+    </param>
+    <param>
+      <key>gui_hint</key>
+      <value>2,0,1,2</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>time_offset</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>Time offset</value>
+    </param>
+    <param>
+      <key>min_len</key>
+      <value>200</value>
+    </param>
+    <param>
+      <key>orient</key>
+      <value>Qt.Horizontal</value>
+    </param>
+    <param>
+      <key>start</key>
+      <value>0.95</value>
+    </param>
+    <param>
+      <key>step</key>
+      <value>0.0001</value>
+    </param>
+    <param>
+      <key>stop</key>
+      <value>1.05</value>
+    </param>
+    <param>
+      <key>rangeType</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>widget</key>
+      <value>counter_slider</value>
     </param>
   </block>
   <block>
@@ -462,7 +525,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(648, 108)</value>
+      <value>(624, 108)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -615,7 +678,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(696, 516)</value>
+      <value>(984, 516)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -678,7 +741,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(216, 492)</value>
+      <value>(280, 492)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -694,7 +757,7 @@
     </param>
     <param>
       <key>psize</key>
-      <value>1472*32</value>
+      <value>1472*16</value>
     </param>
     <param>
       <key>eof</key>
@@ -729,7 +792,7 @@
     </param>
     <param>
       <key>epsilon</key>
-      <value>1</value>
+      <value>time_offset</value>
     </param>
     <param>
       <key>freq_offset</key>
@@ -737,7 +800,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(504, 484)</value>
+      <value>(704, 484)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -952,7 +1015,7 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(840, 60)</value>
+      <value>(776, 60)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1027,7 +1090,7 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(840, 292)</value>
+      <value>(784, 268)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1078,7 +1141,8 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>comment</key>
-      <value>Try out some of the other spectrum maps too.</value>
+      <value>Try out some of the other spectrum maps too.
+Specifically, try example1b.</value>
     </param>
     <param>
       <key>affinity</key>
@@ -1094,11 +1158,11 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(864, 504)</value>
+      <value>(1000, 112)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -1181,11 +1245,11 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(288, 348)</value>
+      <value>(344, 348)</value>
     </param>
     <param>
       <key>gui_hint</key>
-      <value>2,0,1,2</value>
+      <value>3,0,1,2</value>
     </param>
     <param>
       <key>_rotation</key>
