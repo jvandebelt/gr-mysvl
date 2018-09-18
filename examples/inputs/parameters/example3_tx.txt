@@ -1,0 +1,5 @@
+1 1 64 rectangular
+1 2 64 rectangular
+1 3 64 rectangular
+0 1 96 rectangular
+0 2 96 rectangular
