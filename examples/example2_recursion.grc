@@ -155,7 +155,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -269,7 +269,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -320,7 +320,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>file</key>
@@ -371,7 +371,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>file</key>
@@ -689,7 +689,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(928, 444)</value>
+      <value>(968, 444)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -740,7 +740,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>freq_error</key>
@@ -866,7 +866,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fft_len</key>
@@ -1044,7 +1044,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fft_options</key>
@@ -1505,7 +1505,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(880, 244)</value>
+      <value>(936, 340)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1513,7 +1513,7 @@
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>grid</key>
@@ -1804,7 +1804,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(880, 340)</value>
+      <value>(880, 244)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -2087,7 +2087,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2531,6 +2531,12 @@ os.chdir(script_path)
     <sink_key>0</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_throttle_0</source_block_id>
+    <sink_block_id>qtgui_freq_sink_x_0_0_0_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
     <source_block_id>digital_gmsk_demod_0</source_block_id>
     <sink_block_id>blks2_packet_decoder_0</sink_block_id>
     <source_key>0</source_key>
@@ -2569,12 +2575,6 @@ os.chdir(script_path)
   <connection>
     <source_block_id>mysvl_svl_1</source_block_id>
     <sink_block_id>blocks_throttle_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>mysvl_svl_1</source_block_id>
-    <sink_block_id>qtgui_freq_sink_x_0_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

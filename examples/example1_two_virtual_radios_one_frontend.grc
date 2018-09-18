@@ -155,7 +155,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -269,7 +269,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -320,11 +320,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/outputs/output_audio2.mp3</value>
+      <value>./outputs/output_audio2.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -371,11 +371,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/outputs/output_audio1.mp3</value>
+      <value>./outputs/output_audio1.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -422,7 +422,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/Memory_and_Forgetting.mp3</value>
+      <value>./inputs/Memory_and_Forgetting.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -477,7 +477,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/Memory_and_Forgetting.mp3</value>
+      <value>./inputs/Memory_and_Forgetting.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -689,7 +689,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(928, 444)</value>
+      <value>(968, 444)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -740,7 +740,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>freq_error</key>
@@ -866,7 +866,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fft_len</key>
@@ -1044,11 +1044,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>fft_options</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/128i_64_64o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_rx.txt</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1084,7 +1084,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/1x128i_1x64_2x64o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_rx.txt</value>
     </param>
     <param>
       <key>vlen</key>
@@ -1115,7 +1115,7 @@
     </param>
     <param>
       <key>fft_options</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/64_64i_128o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_tx.txt</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1151,7 +1151,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/1x64_2x64i_1x128o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_tx.txt</value>
     </param>
     <param>
       <key>vlen</key>
@@ -1505,7 +1505,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(880, 244)</value>
+      <value>(936, 340)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1513,7 +1513,7 @@
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>grid</key>
@@ -1804,7 +1804,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(880, 340)</value>
+      <value>(880, 244)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -2087,7 +2087,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2422,6 +2422,42 @@
       <value>-1</value>
     </param>
   </block>
+  <block>
+    <key>epy_module</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>source_code</key>
+      <value># this module will be imported in the into your flowgraph
+import os
+
+script_path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(script_path)
+</value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(344, 12)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>relative_paths</value>
+    </param>
+  </block>
   <connection>
     <source_block_id>blks2_packet_decoder_0</source_block_id>
     <sink_block_id>blocks_char_to_float_0</sink_block_id>
@@ -2495,6 +2531,12 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_throttle_0</source_block_id>
+    <sink_block_id>qtgui_freq_sink_x_0_0_0_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
     <source_block_id>digital_gmsk_demod_0</source_block_id>
     <sink_block_id>blks2_packet_decoder_0</sink_block_id>
     <source_key>0</source_key>
@@ -2533,12 +2575,6 @@
   <connection>
     <source_block_id>mysvl_svl_1</source_block_id>
     <sink_block_id>blocks_throttle_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>mysvl_svl_1</source_block_id>
-    <sink_block_id>qtgui_freq_sink_x_0_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
