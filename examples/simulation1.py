@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Simulation1
-# Generated: Mon Sep 17 17:09:49 2018
+# Generated: Tue Sep 18 11:55:44 2018
 ##################################################
 
 from distutils.version import StrictVersion
@@ -30,6 +30,7 @@ from gnuradio.filter import firdes
 from grc_gnuradio import blks2 as grc_blks2
 from optparse import OptionParser
 import mysvl
+import relative_paths  # embedded python module
 import sip
 import sys
 from gnuradio import qtgui
@@ -259,8 +260,8 @@ class simulation1(gr.top_block, Qt.QWidget):
         self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_win, 0, 0, 1, 1)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
         [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
-        self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, '/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/1x64_2x64i_1x128o.txt', '/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/64_64i_128o.txt')
-        self.mysvl_svl_0_0 = mysvl.svl(gr.sizeof_gr_complex*1, 1, '/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/1x128i_1x64_2x64o.txt', '/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/128i_64_64o.txt')
+        self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, '/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_tx.txt', '/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_tx.txt')
+        self.mysvl_svl_0_0 = mysvl.svl(gr.sizeof_gr_complex*1, 1, '/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_rx.txt', '/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_rx.txt')
         self.digital_ofdm_tx_0 = digital.ofdm_tx(
         	  fft_len=64, cp_len=16,
         	  packet_length_tag_key='length',
@@ -298,11 +299,11 @@ class simulation1(gr.top_block, Qt.QWidget):
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, length, "length")
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_vcc((2.0/4, ))
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.05, ))
-        self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_char*1, '/home/jonathan/repos/gr-mysvl/examples/inputs/Memory_and_Forgetting.mp3', True)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/jonathan/repos/gr-mysvl/examples/inputs/Memory_and_Forgetting.mp3', True)
-        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_char*1, '/home/jonathan/repos/gr-mysvl/examples/outputs/output_audio1.mp3', False)
+        self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_char*1, './inputs/Memory_and_Forgetting.mp3', True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, './inputs/Memory_and_Forgetting.mp3', True)
+        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_char*1, './outputs/output_audio1.mp3', False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/jonathan/repos/gr-mysvl/examples/outputs/output_audio2.mp3', False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, './outputs/output_audio2.mp3', False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.blks2_packet_encoder_1 = grc_blks2.packet_mod_b(grc_blks2.packet_encoder(

@@ -324,7 +324,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/outputs/output_audio2.mp3</value>
+      <value>./outputs/output_audio2.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -375,7 +375,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/outputs/output_audio1.mp3</value>
+      <value>./outputs/output_audio1.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -422,7 +422,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/Memory_and_Forgetting.mp3</value>
+      <value>./inputs/Memory_and_Forgetting.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -477,7 +477,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/Memory_and_Forgetting.mp3</value>
+      <value>./inputs/Memory_and_Forgetting.mp3</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1048,7 +1048,7 @@
     </param>
     <param>
       <key>fft_options</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/128i_64_64o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_rx.txt</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1084,7 +1084,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/1x128i_1x64_2x64o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_rx.txt</value>
     </param>
     <param>
       <key>vlen</key>
@@ -1115,7 +1115,7 @@
     </param>
     <param>
       <key>fft_options</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/64_64i_128o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_tx.txt</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1151,7 +1151,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/1x64_2x64i_1x128o.txt</value>
+      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_tx.txt</value>
     </param>
     <param>
       <key>vlen</key>
@@ -2420,6 +2420,42 @@
     <param>
       <key>ymin</key>
       <value>-1</value>
+    </param>
+  </block>
+  <block>
+    <key>epy_module</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>source_code</key>
+      <value># this module will be imported in the into your flowgraph
+import os
+
+script_path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(script_path)
+</value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(344, 12)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>relative_paths</value>
     </param>
   </block>
   <connection>
