@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Simulation1
-# Generated: Tue Sep 18 11:55:44 2018
+# Generated: Tue Sep 18 12:31:38 2018
 ##################################################
 
 from distutils.version import StrictVersion
@@ -122,15 +122,105 @@ class simulation1(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 2, 0, 1, 2)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,2)]
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 1, 8)
+        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,4)]
+        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,8)]
+        self.qtgui_freq_sink_x_0_0_0_1_0_0 = qtgui.freq_sink_c(
+        	512, #size
+        	firdes.WIN_BLACKMAN_hARRIS, #wintype
+        	0, #fc
+        	samp_rate, #bw
+        	"Instance 1: Virtual Spectrum 2", #name
+        	1 #number of inputs
+        )
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.set_update_time(0.10)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.set_y_axis(-80, -20)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.set_y_label('Relative Gain', 'dB')
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.enable_autoscale(False)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.enable_grid(False)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.set_fft_average(1.0)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.enable_axis_labels(True)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.enable_control_panel(False)
+
+        if not True:
+          self.qtgui_freq_sink_x_0_0_0_1_0_0.disable_legend()
+
+        if "complex" == "float" or "complex" == "msg_float":
+          self.qtgui_freq_sink_x_0_0_0_1_0_0.set_plot_pos_half(not True)
+
+        labels = ['GMSK Signal', '', '', '', '',
+                  '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+                  1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+        for i in xrange(1):
+            if len(labels[i]) == 0:
+                self.qtgui_freq_sink_x_0_0_0_1_0_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_freq_sink_x_0_0_0_1_0_0.set_line_label(i, labels[i])
+            self.qtgui_freq_sink_x_0_0_0_1_0_0.set_line_width(i, widths[i])
+            self.qtgui_freq_sink_x_0_0_0_1_0_0.set_line_color(i, colors[i])
+            self.qtgui_freq_sink_x_0_0_0_1_0_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_freq_sink_x_0_0_0_1_0_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0_0_1_0_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_1_0_0_win, 1, 7, 1, 1)
+        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
+        [self.top_grid_layout.setColumnStretch(c,1) for c in range(7,8)]
+        self.qtgui_freq_sink_x_0_0_0_1_0 = qtgui.freq_sink_c(
+        	1024, #size
+        	firdes.WIN_BLACKMAN_hARRIS, #wintype
+        	0, #fc
+        	samp_rate, #bw
+        	"Instance 1: Virtual Spectrum 1", #name
+        	1 #number of inputs
+        )
+        self.qtgui_freq_sink_x_0_0_0_1_0.set_update_time(0.10)
+        self.qtgui_freq_sink_x_0_0_0_1_0.set_y_axis(-80, -20)
+        self.qtgui_freq_sink_x_0_0_0_1_0.set_y_label('Relative Gain', 'dB')
+        self.qtgui_freq_sink_x_0_0_0_1_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0_0_0_1_0.enable_autoscale(False)
+        self.qtgui_freq_sink_x_0_0_0_1_0.enable_grid(False)
+        self.qtgui_freq_sink_x_0_0_0_1_0.set_fft_average(1.0)
+        self.qtgui_freq_sink_x_0_0_0_1_0.enable_axis_labels(True)
+        self.qtgui_freq_sink_x_0_0_0_1_0.enable_control_panel(False)
+
+        if not True:
+          self.qtgui_freq_sink_x_0_0_0_1_0.disable_legend()
+
+        if "complex" == "float" or "complex" == "msg_float":
+          self.qtgui_freq_sink_x_0_0_0_1_0.set_plot_pos_half(not True)
+
+        labels = ['GMSK Signal', '', '', '', '',
+                  '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+                  1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+        for i in xrange(1):
+            if len(labels[i]) == 0:
+                self.qtgui_freq_sink_x_0_0_0_1_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_freq_sink_x_0_0_0_1_0.set_line_label(i, labels[i])
+            self.qtgui_freq_sink_x_0_0_0_1_0.set_line_width(i, widths[i])
+            self.qtgui_freq_sink_x_0_0_0_1_0.set_line_color(i, colors[i])
+            self.qtgui_freq_sink_x_0_0_0_1_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_freq_sink_x_0_0_0_1_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0_0_1_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_1_0_win, 1, 0, 1, 7)
+        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
+        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,7)]
         self.qtgui_freq_sink_x_0_0_0_1 = qtgui.freq_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
         	0, #fc
         	samp_rate, #bw
-        	"Virtual Spectrum 2", #name
+        	"Instance 2: Virtual Spectrum 2", #name
         	1 #number of inputs
         )
         self.qtgui_freq_sink_x_0_0_0_1.set_update_time(0.10)
@@ -167,9 +257,9 @@ class simulation1(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0_0_0_1.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_0_0_1_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0_0_1.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_1_win, 0, 1, 1, 1)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_1_win, 0, 4, 1, 3)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(1,2)]
+        [self.top_grid_layout.setColumnStretch(c,1) for c in range(4,7)]
         self.qtgui_freq_sink_x_0_0_0_0 = qtgui.freq_sink_c(
         	2048, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -212,15 +302,15 @@ class simulation1(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0_0_0_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_0_0_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0_0_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_0_win, 1, 0, 1, 2)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,2)]
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_0_win, 2, 0, 1, 8)
+        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
+        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,8)]
         self.qtgui_freq_sink_x_0_0_0 = qtgui.freq_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
         	0, #fc
         	samp_rate, #bw
-        	"Virtual Spectrum 1", #name
+        	"Instance 2: Virtual Spectrum 1", #name
         	1 #number of inputs
         )
         self.qtgui_freq_sink_x_0_0_0.set_update_time(0.10)
@@ -257,11 +347,13 @@ class simulation1(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0_0_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_0_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_win, 0, 0, 1, 1)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_win, 0, 0, 1, 4)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
-        self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, '/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_tx.txt', '/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_tx.txt')
-        self.mysvl_svl_0_0 = mysvl.svl(gr.sizeof_gr_complex*1, 1, '/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_rx.txt', '/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_rx.txt')
+        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        self.mysvl_svl_1_0_0 = mysvl.svl(gr.sizeof_gr_complex*1, 1, './inputs/spectrum_maps/example2_I1_rx.txt', './inputs/parameters/example2_I1_rx.txt')
+        self.mysvl_svl_1_0 = mysvl.svl(gr.sizeof_gr_complex*1, 1, './inputs/spectrum_maps/example2_I1_tx.txt', './inputs/parameters/example2_I1_tx.txt')
+        self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, './inputs/spectrum_maps/example2_I2_tx.txt', './inputs/parameters/example2_I2_tx.txt')
+        self.mysvl_svl_0_0 = mysvl.svl(gr.sizeof_gr_complex*1, 1, './inputs/spectrum_maps/example2_I2_rx.txt', './inputs/parameters/example2_I2_rx.txt')
         self.digital_ofdm_tx_0 = digital.ofdm_tx(
         	  fft_len=64, cp_len=16,
         	  packet_length_tag_key='length',
@@ -297,6 +389,8 @@ class simulation1(gr.top_block, Qt.QWidget):
         )
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, length, "length")
+        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_vcc((2.0/4, ))
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.05, ))
         self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_char*1, './inputs/Memory_and_Forgetting.mp3', True)
@@ -333,18 +427,24 @@ class simulation1(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_file_source_0_0, 0), (self.blks2_packet_encoder_1, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.mysvl_svl_1, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.qtgui_freq_sink_x_0_0_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.mysvl_svl_1, 1))
-        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.qtgui_freq_sink_x_0_0_0_1, 0))
+        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.mysvl_svl_1_0, 1))
+        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.qtgui_freq_sink_x_0_0_0_1_0_0, 0))
+        self.connect((self.blocks_null_source_0, 0), (self.mysvl_svl_1, 1))
+        self.connect((self.blocks_null_source_0, 0), (self.qtgui_freq_sink_x_0_0_0_1, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_ofdm_tx_0, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.mysvl_svl_0_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.mysvl_svl_1_0_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.qtgui_freq_sink_x_0_0_0_0, 0))
         self.connect((self.digital_gmsk_demod_0, 0), (self.blks2_packet_decoder_0, 0))
         self.connect((self.digital_gmsk_mod_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))
         self.connect((self.digital_ofdm_rx_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.digital_ofdm_tx_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.mysvl_svl_0_0, 1), (self.digital_gmsk_demod_0, 0))
+        self.connect((self.mysvl_svl_0_0, 1), (self.blocks_null_sink_0, 0))
         self.connect((self.mysvl_svl_0_0, 0), (self.digital_ofdm_rx_0, 0))
-        self.connect((self.mysvl_svl_1, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.mysvl_svl_1, 0), (self.qtgui_freq_sink_x_0_0_0_0, 0))
+        self.connect((self.mysvl_svl_1, 0), (self.mysvl_svl_1_0, 0))
+        self.connect((self.mysvl_svl_1, 0), (self.qtgui_freq_sink_x_0_0_0_1_0, 0))
+        self.connect((self.mysvl_svl_1_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.mysvl_svl_1_0_0, 1), (self.digital_gmsk_demod_0, 0))
+        self.connect((self.mysvl_svl_1_0_0, 0), (self.mysvl_svl_0_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "simulation1")
@@ -357,6 +457,8 @@ class simulation1(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+        self.qtgui_freq_sink_x_0_0_0_1_0_0.set_frequency_range(0, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0_0_1_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_freq_sink_x_0_0_0_1.set_frequency_range(0, self.samp_rate)
         self.qtgui_freq_sink_x_0_0_0_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_freq_sink_x_0_0_0.set_frequency_range(0, self.samp_rate)

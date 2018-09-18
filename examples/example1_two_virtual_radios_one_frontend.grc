@@ -1048,7 +1048,7 @@
     </param>
     <param>
       <key>fft_options</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_rx.txt</value>
+      <value>./inputs/parameters/example1a-c_rx.txt</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1084,7 +1084,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_rx.txt</value>
+      <value>./inputs/spectrum_maps/example1a_rx.txt</value>
     </param>
     <param>
       <key>vlen</key>
@@ -1115,7 +1115,7 @@
     </param>
     <param>
       <key>fft_options</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/parameters/example1_tx.txt</value>
+      <value>./inputs/parameters/example1a-c_tx.txt</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1151,7 +1151,7 @@
     </param>
     <param>
       <key>spectrum_map</key>
-      <value>/home/jonathan/repos/gr-mysvl/examples/inputs/spectrum_maps/example1a_tx.txt</value>
+      <value>./inputs/spectrum_maps/example1a_tx.txt</value>
     </param>
     <param>
       <key>vlen</key>
