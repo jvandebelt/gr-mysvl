@@ -133,7 +133,7 @@
     </param>
     <param>
       <key>stop</key>
-      <value>0.01</value>
+      <value>0.05</value>
     </param>
     <param>
       <key>rangeType</key>
@@ -223,7 +223,7 @@
     </param>
     <param>
       <key>stop</key>
-      <value>0.01</value>
+      <value>0.2</value>
     </param>
     <param>
       <key>rangeType</key>
@@ -462,7 +462,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(632, 108)</value>
+      <value>(648, 108)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -513,7 +513,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(608, 244)</value>
+      <value>(600, 244)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -615,7 +615,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(920, 476)</value>
+      <value>(696, 516)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -678,7 +678,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(368, 452)</value>
+      <value>(216, 492)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -694,7 +694,7 @@
     </param>
     <param>
       <key>psize</key>
-      <value>1472*64</value>
+      <value>1472*32</value>
     </param>
     <param>
       <key>eof</key>
@@ -737,7 +737,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(720, 444)</value>
+      <value>(504, 484)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -952,7 +952,7 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(776, 60)</value>
+      <value>(840, 60)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1027,7 +1027,7 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(776, 260)</value>
+      <value>(840, 292)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1094,11 +1094,11 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1000, 112)</value>
+      <value>(864, 504)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -1181,7 +1181,7 @@ Enable these blocks to add guard bands.</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(432, 348)</value>
+      <value>(288, 348)</value>
     </param>
     <param>
       <key>gui_hint</key>
