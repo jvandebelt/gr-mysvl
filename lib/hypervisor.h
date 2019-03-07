@@ -29,6 +29,13 @@
 namespace gr {
   namespace mysvl {
 
+struct optimized_map {
+	int map_in;
+    int map_out;
+    int length;
+};
+	
+
     class hypervisor
     {
 	private:
@@ -44,6 +51,7 @@ namespace gr {
 		int d_itemsize;
 		int d_fft_span;
 		spectrum_map d_map;
+		std::vector<optimized_map> d_optimized;
 		fft_params d_fft_params;
 		stream_vector d_streams_in;
 		stream_vector d_streams_out;
@@ -51,6 +59,7 @@ namespace gr {
 		std::vector<std::vector<gr_complex> > d_items_in;
 		std::vector<std::vector<gr_complex> > d_items_out;
 		//std::vector<std::vector<gr_complex> > d_frequency_domain_items;
+		void optimize_spectrum_map();
 		
 		//stream d_test_stream;
 

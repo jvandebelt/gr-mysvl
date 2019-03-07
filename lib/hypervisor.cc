@@ -102,6 +102,7 @@ namespace gr {
 		//	d_streams_out.emplace_back(new stream(64, false, d_window, d_itemsize)); //still need to set the fft size correctly manually
 		//	d_items_out.resize(d_items_out.size() + 1);
 		//}
+		optimize_spectrum_map();
 	}
 	
 	std::vector<fft_parameters> hypervisor::get_fft_list(){
@@ -119,11 +120,45 @@ namespace gr {
 
 		d_items_in[input].insert(d_items_in[input].end(), &in[0], &in[ninput_items*itemsize]);
 		
-		std::copy(&in[0], &in[ninput_items*itemsize], d_items_in[input].begin());
+		std::copy(&in[0], &in[ninput_items*itemsize], d_items_in[input].begin()); // copying to d_items_in
 		//d_items_out[input].resize(ninput_items); // this line is making it work somehow
 		//printf("Size of d_items[in]: %d \n", d_items_in[input].size());
 		
 	}
+
+	void hypervisor::optimize_spectrum_map(){
+
+        gr_vector_int input_map = d_map.get_spectrum_map_in();
+		gr_vector_int output_map= d_map.get_spectrum_map_out();
+
+        int track_input=input_map[0];
+	    int track_output=output_map[0];
+        int track_length=0;
+
+		for(unsigned int i=0; i<input_map.size(); i++) {
+			if(input_map[i]!=track_input || output_map[i]!=track_output){
+                optimized_map temp {track_input, track_output, track_length};
+                d_optimized.push_back(temp);
+                track_input=input_map[i];
+	            track_output=output_map[i];
+                track_length=1;
+            }
+            else track_length++;
+		}
+
+		//ending conditions
+		optimized_map temp {track_input, track_output, track_length};
+        d_optimized.push_back(temp);
+
+		/*
+        printf("Optimized map \n");
+		for(unsigned int i=0; i<d_optimized.size(); i++) {
+			printf("in: %d ", d_optimized[i].map_in);
+			printf(" out: %d \n", d_optimized[i].map_out);
+        	printf(" length: %d \n", d_optimized[i].length);
+		}
+		*/
+    }
 
 	void hypervisor::get_output_stream(int output, unsigned int noutput_items, gr_complex* out) {
 	
@@ -153,6 +188,8 @@ namespace gr {
 		
 		// do spectrum mapping
 
+		
+		
 		gr_vector_int track_input_locations;
 		gr_vector_int track_output_locations;
 
@@ -161,21 +198,24 @@ namespace gr {
 
 		for(unsigned int output=0; output<d_streams_out.size(); output++)
 			track_output_locations.push_back(0);
-		
+
+		// old way: one by one
+		/*
 		for(unsigned int i=0; i<input_map.size(); i++) {
 			d_items_out[output_map[i]-1][track_output_locations[output_map[i]-1]]=d_items_in[input_map[i]-1][track_input_locations[input_map[i]-1]];
 			track_output_locations[output_map[i]-1]++;
 			track_input_locations[input_map[i]-1]++;
 		}
 
-		//
-		// temp placeholder - only works if ninputs == noutputs!
-		//for(int output=0; output<d_items_out.size(); output++) {
-		//	for(int j=0; j<d_items_out[output].size(); j++)
-		//		d_items_out[output][j] = d_items_in[output][j];
-		//}		
-	
-
+		*/
+		
+		// new way: blocks
+		for(unsigned int i=0; i<d_optimized.size(); i++) {
+			memcpy(&d_items_out[d_optimized[i].map_out-1][track_output_locations[d_optimized[i].map_out-1]], &d_items_in[d_optimized[i].map_in-1][track_input_locations[d_optimized[i].map_in-1]], d_itemsize*d_optimized[i].length);			
+			track_output_locations[d_optimized[i].map_out-1]+=d_optimized[i].length;
+			track_input_locations[d_optimized[i].map_in-1]+=d_optimized[i].length;
+		}
+		
 		// convert each output stream to time domain
 		for(unsigned int output=0; output<d_streams_out.size(); output++) {
 			d_streams_out[output]->work(d_items_out[output], d_items_out[output]);
@@ -216,7 +256,7 @@ namespace gr {
 		
 		// Check that input span equals output span.
 		if(input_map.size()!=output_map.size())
-			throw std::invalid_argument("spectrum map error: different input and output sizes"); 
+			throw std::invalid_argument("spectrum map error: different input and output sizes");
 		
 		// Check that inputs have the same number of samples as fft_size
 		for(unsigned int i=0; i < ninputs; i++){
