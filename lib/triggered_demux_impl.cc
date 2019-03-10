@@ -108,67 +108,101 @@ namespace gr {
       /*
       
       */
-      
-          
+                
       while (noutput_items-items_out >=d_lengths[d_stream] && ninput_items[0]-items_in >=d_lengths[d_stream] && ninput_items[1]-items_in >=d_lengths[d_stream]) {
             gr::thread::scoped_lock guard(d_setlock);
             
-            if(d_delay_left > 0 && d_delay_left <= d_lengths[d_stream]) {
-                d_next_packet_length=d_delay_left;
-                d_delay_left=0; 
-            }
-            else if(d_delay_left > 0) {
-                d_next_packet_length= d_lengths[d_stream];
-                d_delay_left -= d_lengths[d_stream];      
-            }
-            
-            d_next_packet_length = find_trigger_offset(items_in, items_in+d_lengths[d_stream], trigger) - items_in;  
+			if(d_delay_left>0) {
+		        if(d_delay_left <= d_lengths[d_stream]) {
+		            d_next_packet_length=d_delay_left;
+		            d_delay_left=0; 
+		        }
+		        else {
+		            d_next_packet_length= d_lengths[d_stream];
+		            d_delay_left -= d_lengths[d_stream];      
+		        }
+
+				out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
+		                          
+		        memcpy(out, &in[items_in*d_itemsize], d_next_packet_length*d_itemsize);
+		            
+		       	//if(d_add_tags){
+		         //     add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_next_packet_length));       
+		       // }
+		        
+	        	// repeat existing tags
+	            get_tags_in_window(stream_t, 0,items_in, items_in + d_next_packet_length);
+	            BOOST_FOREACH(gr::tag_t t, stream_t){
+	              t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
+	              add_item_tag(d_stream, t);
+	            }
+	            
+	            output_index[d_stream] += d_next_packet_length;
+	            items_out += d_next_packet_length;         			//possible source of bugs: not possible to check whether each output less than noutput[d_stream]       
+	            items_in += d_next_packet_length;
+	            
+				if(d_delay_left==0){       
+			         d_reset = false;
+		             d_stream = 0;
+				}
+			}
+
+			else{
+				d_next_packet_length = find_trigger_offset(items_in, items_in+d_lengths[d_stream], trigger) - items_in;
+				
+				int delay=0;
+				if(d_reset) {
+		            if(d_next_packet_length + d_trigger_delay <= d_lengths[d_stream]){      	          
+		               	delay=d_trigger_delay;
+						d_next_packet_length+=d_trigger_delay;
+					}
+		            else{
+		                d_delay_left=d_next_packet_length+d_trigger_delay-d_lengths[d_stream];
+		                d_next_packet_length = d_lengths[d_stream];
+					}
+            	}
+
             //printf("Offset found at %d\n", items_in + d_next_packet_length);        
-            if(d_reset) {
-                if(d_next_packet_length + d_trigger_delay <= d_lengths[d_stream])                
-                   d_next_packet_length +=d_trigger_delay;
-                else{
-                    d_delay_left=d_next_packet_length+d_trigger_delay-d_lengths[d_stream];
-                    d_next_packet_length = d_lengths[d_stream];}
-            }
+            
                         
             //printf("Next packet length %d\n", d_next_packet_length);
             
             //if(d_delay_left)
                 //printf("Delay left: %d\n", d_delay_left);  
             
-            if(d_next_packet_length == d_lengths[d_stream]) {                      
-                out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
-                              
-                memcpy(out, &in[items_in*d_itemsize], d_next_packet_length*d_itemsize);
-                
-                if(d_add_tags){
-                  add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_next_packet_length));       
-                }
-            
-            // repeat existing tags
-                get_tags_in_window(stream_t, 0,items_in, items_in + d_next_packet_length);
-                BOOST_FOREACH(gr::tag_t t, stream_t){
-                  t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
-                  add_item_tag(d_stream, t);
-                }
-                
-                output_index[d_stream] += d_next_packet_length;
-                items_out += d_next_packet_length;                
-                items_in += d_next_packet_length;
-                        
-                do { // Skip all those outputs with zero length
-                    d_stream = (d_stream+1) % d_lengths.size();
-                  } while (d_lengths[d_stream] == 0);
-                  
-                if(d_reset && d_delay_left ==0) {
-                    d_reset = false;
-                    d_stream = 0;
-                }
-            }
-            else {
-                items_in += d_next_packet_length;
-            }
+		        //if(d_next_packet_length == d_lengths[d_stream])) {                      
+		            out = (char *) output_items[d_stream] + output_index[d_stream]*d_itemsize;  
+		                          
+		            memcpy(out, &in[items_in*d_itemsize], d_next_packet_length*d_itemsize);
+		            
+		            if(d_add_tags){
+		              add_item_tag(d_stream, nitems_written(d_stream) +output_index[d_stream], pmt::intern("trigger"), pmt::from_long(d_next_packet_length+1-d_trigger_delay));       
+		            }
+		        
+		        // repeat existing tags
+		            get_tags_in_window(stream_t, 0,items_in, items_in + d_next_packet_length);
+		            BOOST_FOREACH(gr::tag_t t, stream_t){
+		              t.offset = t.offset - nitems_read(0) - items_in + nitems_written(d_stream) + output_index[d_stream];
+		              add_item_tag(d_stream, t);
+		            }
+		            
+		            output_index[d_stream] += d_next_packet_length;
+		            items_out += d_next_packet_length;                
+		            items_in += d_next_packet_length;
+		                    
+		            do { // Skip all those outputs with zero length
+		                d_stream = (d_stream+1) % d_lengths.size();
+		              } while (d_lengths[d_stream] == 0);
+		              
+		            if(d_reset && d_delay_left ==0) {
+		                d_reset = false;
+		                d_stream = 0;
+		            }
+		        //}
+		        //else {
+		           // items_in += d_next_packet_length;
+					//}
+			}
         } 
             
             // Save any remaining samples

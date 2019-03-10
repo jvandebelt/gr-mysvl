@@ -2,7 +2,7 @@
 <block>
 	<name>MySVL</name>
 	<key>mysvl_svl</key>
-	<category>[mysvl]</category>
+	<category>mysvl</category>
 	<import>import mysvl</import>
 	<make>mysvl.svl($type.size*$vlen, $blocksize, $spectrum_map, $fft_options)</make>
 	<param>

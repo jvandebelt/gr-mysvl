@@ -2,7 +2,7 @@
 <block>
   <name>weave</name>
   <key>mysvl_weave</key>
-  <category>[mysvl]</category>
+  <category>mysvl</category>
   <import>import mysvl</import>
   <make>mysvl.weave($type.size*$vlen, $blocksize)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.

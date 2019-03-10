@@ -2,7 +2,7 @@
 <block>
   <name>Correlation and FO</name>
   <key>mysvl_corr_freq_offset</key>
-  <category>[mysvl]</category>
+  <category>mysvl</category>
   <import>import mysvl</import>
   <make>mysvl.corr_freq_offset($symbols, $sps, $mark_delay, $threshold)</make>
   <callback>set_mark_delay($mark_delay)</callback>

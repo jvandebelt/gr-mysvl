@@ -18,6 +18,8 @@
 #include "mysvl/triggered_demux.h"
 #include "mysvl/corr_freq_offset.h"
 #include "mysvl/stream_demux.h"
+#include "mysvl/sync_channels.h"
+#include "mysvl/drop_packet.h"
 %}
 
 %include "mysvl/weave.h"
@@ -33,3 +35,7 @@ GR_SWIG_BLOCK_MAGIC2(mysvl, corr_freq_offset);
 
 %include "mysvl/stream_demux.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, stream_demux);
+%include "mysvl/sync_channels.h"
+GR_SWIG_BLOCK_MAGIC2(mysvl, sync_channels);
+%include "mysvl/drop_packet.h"
+GR_SWIG_BLOCK_MAGIC2(mysvl, drop_packet);

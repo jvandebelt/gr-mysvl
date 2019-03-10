@@ -2,7 +2,7 @@
 <block>
   <name>Triggered Demux</name>
   <key>mysvl_triggered_demux</key>
-  <category>[mysvl]</category>
+  <category>mysvl</category>
   <import>import mysvl</import>
   <make>mysvl.triggered_demux($type.size*$vlen, $trigger_type.size, $lengths, $delay, $tags)</make>
   <param>

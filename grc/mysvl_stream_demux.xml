@@ -2,7 +2,7 @@
 <block>
   <name>Stream Demux</name>
   <key>mysvl_stream_demux</key>
-  <category>[mysvl]</category>
+  <category>mysvl</category>
   <import>import mysvl</import>
   <make>mysvl.stream_demux($type.size*$vlen, $lengths, $tags)</make>
   <param>

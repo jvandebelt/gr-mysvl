@@ -109,14 +109,14 @@ namespace gr {
     svl_impl::forecast(int noutput_items, gr_vector_int& ninput_items_required)
     {
       // GR_LOG_INFO(d_logger, "MySVL");
-      // printf("Output items %d \n", noutput_items);
+       //printf("Output items %d \n", noutput_items);
       for (unsigned int i = 0; i < ninput_items_required.size(); ++i) {
         ninput_items_required[i] =
           (int)(noutput_items * d_fft_list_in[i].fft_size /
                 d_hypervisor.get_fft_span()  + .5);
 
-        // printf("Number of items required for input %d is %d \n", i,
-        // ninput_items_required[i]);
+         //printf("Number of items required for input %d is %d \n", i,
+         //ninput_items_required[i]);
       }
     }
 
@@ -140,6 +140,7 @@ namespace gr {
 
       std::vector<tag_t> tags;
 
+		/*
       get_tags_in_range(tags, 0, 0, noutput_items, pmt::intern("trigger"));
 
       if (tags.size() > 0)
@@ -154,6 +155,7 @@ namespace gr {
           return 0;
         }
       }
+		*/
 
       while (count < totalcount) {
         for (unsigned int i = 0; i < d_ninputs; i++) {
