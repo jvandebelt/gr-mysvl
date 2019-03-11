@@ -36,6 +36,7 @@ namespace gr {
 		unsigned int d_current_output;
 		unsigned int d_packet_length;
 		size_t d_itemsize;
+		std::vector<bool> d_dropped;
 		
 		bool drop_samples(int offsets[], int drop_offsets[]);
 		bool check_size(int items_in[], int items_out, gr_vector_int &ninput_items, int noutput_items);

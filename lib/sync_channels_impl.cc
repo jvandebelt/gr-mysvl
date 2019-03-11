@@ -66,34 +66,51 @@ namespace gr {
 			return false;
 
       	set_output_multiple(d_packet_length);
+		
+		for(int i=0; i< d_ninputs;i++) {
+            d_dropped.push_back(false);
+            }
 
       	return true;
     }	
 
-	bool sync_channels_impl::drop_samples(int offsets[], int drop_offsets[]){
+	bool sync_channels_impl::drop_samples(int drop[], int drop_offsets[]){
 	
 		//std::cout<< "in drop samples" << std::endl;
 
 		bool offsets_exist=false;
-		// first check whether we have offsets or are alligned
-		for(int i=0; i< d_ninputs; i++){
-			if((offsets[i]%d_packet_length)!=0){
-				offsets_exist=true;
-				//printf("input %d offset of %d \n",i, (offsets[i]%d_packet_length));
-				}				
-		}
+		bool drop_all_same=true;
+		int d_highest_drop=0;
 
+		// first check whether we have offsets or are alligned
+		// also check if all have dropped the same amount
+		for(int i=0; i< d_ninputs; i++){
+			if((drop[i])!=0){
+				offsets_exist=true;
+				//printf("input %d drop of %d \n",i, (drop[i]%d_packet_length));
+				}
+			if((drop[i])!= drop[0]){
+				drop_all_same=false;
+				//printf("input %d drop of %d \n",i, (drop[i]%d_packet_length));
+				}
+			//keep track of highest drop - for next part
+			if(drop[i]>d_highest_drop)
+				d_highest_drop=drop[i];			
+		}	
+		
 		//std::cout<< "offsets_exist" <<offsets_exist <<std::endl;
 		if(!offsets_exist){
 			return false;
 		}
+	
+		if(drop_all_same){
+			return false;
+		}	
+
+		//not alligned: need to drop from all except the stream(s) with highest drop
 		
-		//not alligned: need to drop from all
 		for(int i=0; i< d_ninputs; i++){
-			if((offsets[i]%d_packet_length) == 0)
-				drop_offsets[i]=d_packet_length;
-			else
-				drop_offsets[i]=0;
+			drop_offsets[i]=d_highest_drop-drop[i];
 		}
 		return true;
 	}
@@ -137,7 +154,7 @@ namespace gr {
 		gr_vector_int output_index(d_ninputs, 0); // Items written
       	std::vector<gr::tag_t> tags;
 		std::vector<gr::tag_t> propagate_tags;
-		int offsets[d_ninputs];
+		int drop[d_ninputs];
 		int drop_offsets[d_ninputs];
 
 				
@@ -161,31 +178,34 @@ namespace gr {
 			//gr::thread::scoped_lock guard(d_setlock);			
 		
 			for(int i = 0; i <d_ninputs; i++) {
-				offsets[i] =0;
+				drop[i] =0;
 				drop_offsets[i]=0;
 			}	
 
 			for(int i = 0; i <d_ninputs; i++) {
 				get_tags_in_window(tags, i, items_in[i], items_in[i]+d_packet_length, pmt::intern("drop"));
-				if (tags.size() > 0){
-					offsets[i]=pmt::to_long(tags[0].value);
-					//printf("Input %d offset of %d \n",i, offsets[i]);
+				if (tags.size() > 0 && d_dropped[i]==false){
+					drop[i]=pmt::to_long(tags[0].value);
+					printf("Input %d drop %d packet\n",i, drop[i]);
+					d_dropped[i]=true;
+				}
+				else{
+					d_dropped[i]=false;
 				}
 				tags.clear();
 		  	}
 
-			/*
-			if(drop_samples(offsets, drop_offsets)){
+			
+			if(drop_samples(drop, drop_offsets)){
 				for(int i = 0; i <d_ninputs; i++) {
-					//printf("Input %d: need to drop %d samples \n", i, drop_offsets[i]);
-					consume(i, drop_offsets[i]);
-					items_in[i]+=drop_offsets[i];
+					printf("Input %d: need to drop %d packets \n", i, drop_offsets[i]);
+					consume(i, d_packet_length*drop_offsets[i]);
+					items_in[i]+=d_packet_length*drop_offsets[i];
 					}
 				set_history(ninput_items[0]-items_in[0]);
 				return 0;
-			}
-			*/	
-			//else{
+			}	
+			else{
 				for(int i = 0; i <d_ninputs; i++) {
 					memcpy(out[i]+items_in[i]*d_itemsize, in[i], d_itemsize*d_packet_length);
 					in[i] += d_packet_length*d_itemsize;
@@ -197,7 +217,7 @@ namespace gr {
 					items_in[i]+=d_packet_length;
 				}
 				items_out+=d_packet_length;
-			//}
+			}
 			//count ++;
 		}
 		

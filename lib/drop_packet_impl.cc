@@ -93,15 +93,14 @@ namespace gr {
 			//printf("Tag %d value %lu \n", i, pmt::to_long(d_tags[i].value));
 			//printf("Tag %d offset %lu \n", i, d_tags[i].offset);
 			
-			//TODO still some error here when local_offset<packet_size
-			// almost working
+			// dropping samples correctly
 			//add "drop" intruction tags
-			//propagate tags properly?
 			
 			if ((d_tags[i].offset % d_packet_size) != 0)
 		    {
+				d_drop++;
 		      	printf("Unsynchronized tag. Dropping %lu samples\n", d_tags[i].offset%d_packet_size);
-				printf("total samples dropped is %lu\n", nitems_read(0)-nitems_written(0)+d_tags[i].offset% d_packet_size);
+				//printf("total samples dropped is %lu\n", nitems_read(0)-nitems_written(0)+d_tags[i].offset% d_packet_size);
 
 				memcpy(out, &in[0], sizeof(gr_complex) * d_packet_size*(d_tags[i].offset/d_packet_size));
 			
@@ -118,6 +117,11 @@ namespace gr {
 				return WORK_CALLED_PRODUCE;			
 		    }
 		}
+
+		if(d_drop){
+				add_item_tag(0, nitems_written(0) +1, pmt::intern("drop"), pmt::from_long(d_drop));     
+				d_drop=0;
+			}
 
 		memcpy(out, &in[0], sizeof(gr_complex) *d_packet_size*(ninput_items[0]/d_packet_size));
 		
