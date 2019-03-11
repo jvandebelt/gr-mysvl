@@ -23,5 +23,6 @@ install(FILES
     mysvl_corr_freq_offset.xml
     mysvl_stream_demux.xml
     mysvl_sync_channels.xml
-    mysvl_drop_packet.xml DESTINATION share/gnuradio/grc/blocks
+    mysvl_drop_packet.xml
+    DESTINATION share/gnuradio/grc/blocks
 )

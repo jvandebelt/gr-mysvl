@@ -40,7 +40,7 @@ namespace gr {
      */
     drop_packet_impl::drop_packet_impl(int packet_size)
       : gr::block("drop_packet",
-              gr::io_signature::make(1, 1, sizeof(gr_complex)),
+              gr::io_signature::make2(1, 2, sizeof(gr_complex), sizeof(float)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {	d_packet_size=packet_size;
 		set_tag_propagation_policy(TPP_DONT);
@@ -59,6 +59,7 @@ namespace gr {
     drop_packet_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
         ninput_items_required[0] = noutput_items;
+		ninput_items_required[1] = (noutput_items/d_packet_size)*2*sizeof(float);
 		set_output_multiple(d_packet_size);
 		}
 
@@ -69,13 +70,14 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
       	const char *in = (const char *) input_items[0];
+		const float *header = (const float *) input_items[1];
      	char *out = (char *) output_items[0];
 		
 		std::vector<gr::tag_t> propagate_tags; 
     	// Do <+signal processing+>
    		// Tell runtime system how many input items we consumed on
      	// each input stream.
-		
+		int header_offset=0;
 		d_tags.clear();
 
 		//if(ninput_items[0]%d_packet_size){
@@ -107,11 +109,15 @@ namespace gr {
 				get_tags_in_window(propagate_tags, 0,0, d_packet_size*(d_tags[i].offset/d_packet_size));
 	           	BOOST_FOREACH(gr::tag_t t, propagate_tags){
 						t.offset = t.offset - nitems_read(0) + nitems_written(0); //fix new offset
+						//printf("Header value %d\n", header[header_offset]);
+						t.value= pmt::from_long((int)(header[header_offset])); //need plus one for the zero, or not?
+						header_offset+=sizeof(char);
 						add_item_tag(0, t);
 	            }
 
 				produce(0, d_packet_size*(d_tags[i].offset / d_packet_size));			  
 
+				consume(1, (d_tags[i].offset / d_packet_size)*sizeof(char));
 		      	consume(0, d_tags[i].offset);
 		      	set_history(ninput_items[0] - d_tags[i].offset);
 				return WORK_CALLED_PRODUCE;			
@@ -123,20 +129,34 @@ namespace gr {
 				d_drop=0;
 			}
 
+		//for(int i=0; i< ninput_items[1];i++) {
+		//	printf("Header value %f\n", header[i]);
+		//}
+	
 		memcpy(out, &in[0], sizeof(gr_complex) *d_packet_size*(ninput_items[0]/d_packet_size));
 		
 		get_tags_in_window(propagate_tags, 0,0, d_packet_size*(ninput_items[0]/d_packet_size));
 	            BOOST_FOREACH(gr::tag_t t, propagate_tags){;
 					t.offset = t.offset - nitems_read(0) + nitems_written(0); //fix new offset
+					//std::cout << "current tag keyis  " << t.key << std::endl;
+					t.value= pmt::from_long((int)(header[header_offset])); //need plus one for the zero, or not?
+					//std::cout << "current tag value is " << t.value << std::endl;
+					header_offset+=sizeof(char);
 	            	add_item_tag(0, t);
 	            }
+		//GR_LOG_INFO(d_logger, "printing header values");
+
+		//for(int i=0; i<(ninput_items[0]/d_packet_size); i++){
+		//	printf("Header value %f\n", header[i]);
+		//}
 		
 		consume(0, d_packet_size*(ninput_items[0]/d_packet_size));
+		consume(1, sizeof(char)*(ninput_items[0]/d_packet_size));
 		produce(0, d_packet_size*(ninput_items[0]/d_packet_size));
 		set_history(ninput_items[0]%d_packet_size);
 
       // Tell runtime system how many output items we produced.
-      return WORK_CALLED_PRODUCE;
+      return WORK_CALLED_PRODUCE; 
     }
 
   } /* namespace mysvl */

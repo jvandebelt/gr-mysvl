@@ -26,8 +26,13 @@
 		<name>in</name>
 		<type>complex</type>
 		<vlen>1</vlen>
-		<nports>1</nports>
 	</sink>
+	<sink>
+    	<name>trigger</name>
+    	<type>float</type>
+		<vlen>1</vlen>
+  	</sink>
+	
   <!-- Make one 'source' node per output. Sub-nodes:
        * name (an identifier for the GUI)
        * type

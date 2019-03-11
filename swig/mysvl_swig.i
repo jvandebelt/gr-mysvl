@@ -39,3 +39,4 @@ GR_SWIG_BLOCK_MAGIC2(mysvl, stream_demux);
 GR_SWIG_BLOCK_MAGIC2(mysvl, sync_channels);
 %include "mysvl/drop_packet.h"
 GR_SWIG_BLOCK_MAGIC2(mysvl, drop_packet);
+

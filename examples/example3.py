@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Example3
-# Generated: Mon Mar 11 07:30:37 2019
+# Generated: Mon Mar 11 17:19:46 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -61,12 +61,14 @@ class example3(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.udp_len = udp_len = 1472*16
         self.time_preamble = time_preamble =  [0.125000+0.000000j, 0.522104-0.148216j, -0.495528+0.114832j, -0.267916+0.091700j, 0.236544-0.138456j, -0.098500+0.473800j, 0.476480-0.225344j, -0.187516+0.035372j, 0.051776-0.353552j, -0.104936+0.059916j,  0.228684+0.117504j, -0.530912+0.560756j, 0.359128+0.015872j, -0.132852+0.632840j, -0.105164-0.368872j, 0.368272-0.032412j, 0.125000+0.750000j, 0.463968+0.457792j, 0.151476-0.430948j, 0.685052+0.238524j, 0.494428+0.119428j, -0.557540-0.050056j, 0.416348+0.017368j, 0.104256-0.568836j, -0.301776-0.353552j, 0.079812+0.451516j, 0.439152+0.528072j, 0.642060+0.178484j, -0.090096+0.465096j, -0.446492+0.305776j, -0.111440-0.093688j, -0.538848-0.320228j, 0.125000+0.000000j, -0.538848+0.320228j, -0.111440+0.093688j, -0.446492-0.305776j, -0.090096-0.465096j, 0.642060-0.178484j, 0.439152-0.528072j, 0.079812-0.451516j, -0.301776+0.353552j, 0.104256+0.568836j, 0.416348-0.017368j, -0.557540+0.050056j, 0.494428-0.119428j, 0.685052-0.238524j, 0.151476+0.430948j, 0.463968-0.457792j, 0.125000-0.750000j, 0.368272+0.032412j, -0.105164+0.368872j, -0.132852-0.632840j, 0.359128-0.015872j, -0.530912-0.560756j, 0.228684-0.117504j, -0.104936-0.059916j, 0.051776+0.353552j, -0.187516-0.035372j, 0.476480+0.225344j, -0.098500-0.473800j, 0.236544+0.138456j, -0.267916-0.091700j, -0.495528-0.114832j, 0.522104+0.148216j]
         self.time_offset2 = time_offset2 = 1
         self.time_offset = time_offset = 1
-        self.samp_rate = samp_rate = 500000
+        self.samp_rate = samp_rate = 5000
         self.preamble_len = preamble_len = 64
         self.packet_len = packet_len = 1024
+        self.number_len = number_len = 64
         self.noise2 = noise2 = 0
         self.noise = noise = 0
         self.length = length = 96
@@ -193,6 +195,24 @@ class example3(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win, 1,0,1,1)
         self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, "./inputs/spectrum_maps/one_many_tx.txt", "./inputs/parameters/one_many_tx.txt")
+        self.digital_psk_mod_0_0 = digital.psk.psk_mod(
+          constellation_points=4,
+          mod_code="gray",
+          differential=True,
+          samples_per_symbol=2,
+          excess_bw=0.35,
+          verbose=False,
+          log=False,
+          )
+        self.digital_psk_mod_0 = digital.psk.psk_mod(
+          constellation_points=2,
+          mod_code="gray",
+          differential=True,
+          samples_per_symbol=2,
+          excess_bw=0.35,
+          verbose=False,
+          log=False,
+          )
         self.digital_ofdm_tx_0 = digital.ofdm_tx(
         	  fft_len=64, cp_len=16,
         	  packet_length_tag_key="length",
@@ -218,14 +238,18 @@ class example3(gr.top_block, Qt.QWidget):
         	noise_seed=0,
         	block_tags=False
         )
+        self.blocks_vector_source_x_1_0 = blocks.vector_source_b(range(1,65), True, 1, [])
+        self.blocks_vector_source_x_1 = blocks.vector_source_b(range(1,65), True, 1, [])
+        self.blocks_vector_source_x_0_0_0 = blocks.vector_source_c(time_preamble, True, 1, [])
         self.blocks_vector_source_x_0_0 = blocks.vector_source_c(time_preamble, True, 1, [])
-        self.blocks_vector_source_x_0 = blocks.vector_source_c(time_preamble, True, 1, [])
-        self.blocks_udp_sink_0_0 = blocks.udp_sink(gr.sizeof_gr_complex*1, "127.0.0.2", 4000, 1472*16, True)
-        self.blocks_udp_sink_0 = blocks.udp_sink(gr.sizeof_gr_complex*1, "127.0.0.1", 4000, 1472*16, True)
+        self.blocks_udp_sink_0_0 = blocks.udp_sink(gr.sizeof_gr_complex*1, "127.0.0.2", 4000, udp_len, True)
+        self.blocks_udp_sink_0 = blocks.udp_sink(gr.sizeof_gr_complex*1, "127.0.0.1", 4000, udp_len, True)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, length, "length")
-        self.blocks_stream_mux_0_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (preamble_len, packet_len))
-        self.blocks_stream_mux_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (preamble_len, packet_len))
+        self.blocks_stream_mux_0_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (preamble_len, number_len, packet_len))
+        self.blocks_stream_mux_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (preamble_len, number_len,packet_len))
+        self.blocks_multiply_const_vxx_0_0_0 = blocks.multiply_const_vcc((0.5, ))
+        self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_vcc((0.5, ))
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.05, ))
         self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_char*1, "./inputs/Memory_and_Forgetting.mp3", True)
 
@@ -234,19 +258,25 @@ class example3(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_file_source_0_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))    
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_throttle_0, 0))    
+        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.blocks_stream_mux_0, 1))    
+        self.connect((self.blocks_multiply_const_vxx_0_0_0, 0), (self.blocks_stream_mux_0_0, 1))    
         self.connect((self.blocks_stream_mux_0, 0), (self.channels_channel_model_0_0, 0))    
         self.connect((self.blocks_stream_mux_0_0, 0), (self.channels_channel_model_0, 0))    
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_ofdm_tx_0, 0))    
         self.connect((self.blocks_throttle_0, 0), (self.mysvl_svl_1, 0))    
-        self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_stream_mux_0, 0))    
         self.connect((self.blocks_vector_source_x_0_0, 0), (self.blocks_stream_mux_0_0, 0))    
+        self.connect((self.blocks_vector_source_x_0_0_0, 0), (self.blocks_stream_mux_0, 0))    
+        self.connect((self.blocks_vector_source_x_1, 0), (self.digital_psk_mod_0_0, 0))    
+        self.connect((self.blocks_vector_source_x_1_0, 0), (self.digital_psk_mod_0, 0))    
         self.connect((self.channels_channel_model_0, 0), (self.blocks_udp_sink_0, 0))    
         self.connect((self.channels_channel_model_0, 0), (self.qtgui_time_sink_x_0_0, 0))    
         self.connect((self.channels_channel_model_0_0, 0), (self.blocks_udp_sink_0_0, 0))    
         self.connect((self.channels_channel_model_0_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))    
         self.connect((self.digital_ofdm_tx_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
-        self.connect((self.mysvl_svl_1, 1), (self.blocks_stream_mux_0, 1))    
-        self.connect((self.mysvl_svl_1, 0), (self.blocks_stream_mux_0_0, 1))    
+        self.connect((self.digital_psk_mod_0, 0), (self.blocks_multiply_const_vxx_0_0_0, 0))    
+        self.connect((self.digital_psk_mod_0_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))    
+        self.connect((self.mysvl_svl_1, 1), (self.blocks_stream_mux_0, 2))    
+        self.connect((self.mysvl_svl_1, 0), (self.blocks_stream_mux_0_0, 2))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "example3")
@@ -254,13 +284,19 @@ class example3(gr.top_block, Qt.QWidget):
         event.accept()
 
 
+    def get_udp_len(self):
+        return self.udp_len
+
+    def set_udp_len(self, udp_len):
+        self.udp_len = udp_len
+
     def get_time_preamble(self):
         return self.time_preamble
 
     def set_time_preamble(self, time_preamble):
         self.time_preamble = time_preamble
-        self.blocks_vector_source_x_0.set_data(self.time_preamble, [])
         self.blocks_vector_source_x_0_0.set_data(self.time_preamble, [])
+        self.blocks_vector_source_x_0_0_0.set_data(self.time_preamble, [])
 
     def get_time_offset2(self):
         return self.time_offset2
@@ -281,9 +317,9 @@ class example3(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
-        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
 
     def get_preamble_len(self):
         return self.preamble_len
@@ -296,6 +332,12 @@ class example3(gr.top_block, Qt.QWidget):
 
     def set_packet_len(self, packet_len):
         self.packet_len = packet_len
+
+    def get_number_len(self):
+        return self.number_len
+
+    def set_number_len(self, number_len):
+        self.number_len = number_len
 
     def get_noise2(self):
         return self.noise2

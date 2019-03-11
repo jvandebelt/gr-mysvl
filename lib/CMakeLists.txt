@@ -35,7 +35,8 @@ list(APPEND mysvl_sources
     corr_freq_offset_impl.cc
     stream_demux_impl.cc
     sync_channels_impl.cc
-    drop_packet_impl.cc )
+    drop_packet_impl.cc
+    )
 
 set(mysvl_sources "${mysvl_sources}" PARENT_SCOPE)
 if(NOT mysvl_sources)

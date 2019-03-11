@@ -183,7 +183,7 @@ namespace gr {
 			}	
 
 			for(int i = 0; i <d_ninputs; i++) {
-				get_tags_in_window(tags, i, items_in[i], items_in[i]+d_packet_length, pmt::intern("drop"));
+				get_tags_in_window(tags, i, items_in[i], items_in[i]+d_packet_length, pmt::intern("trigger"));
 				if (tags.size() > 0 && d_dropped[i]==false){
 					drop[i]=pmt::to_long(tags[0].value);
 					printf("Input %d drop %d packet\n",i, drop[i]);
@@ -199,11 +199,9 @@ namespace gr {
 			if(drop_samples(drop, drop_offsets)){
 				for(int i = 0; i <d_ninputs; i++) {
 					printf("Input %d: need to drop %d packets \n", i, drop_offsets[i]);
-					consume(i, d_packet_length*drop_offsets[i]);
+					//consume(i, d_packet_length*drop_offsets[i]);
 					items_in[i]+=d_packet_length*drop_offsets[i];
 					}
-				set_history(ninput_items[0]-items_in[0]);
-				return 0;
 			}	
 			else{
 				for(int i = 0; i <d_ninputs; i++) {

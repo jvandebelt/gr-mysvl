@@ -28,5 +28,6 @@ install(FILES
     corr_freq_offset.h
     stream_demux.h
     sync_channels.h
-    drop_packet.h DESTINATION include/mysvl
+    drop_packet.h
+    DESTINATION include/mysvl
 )
