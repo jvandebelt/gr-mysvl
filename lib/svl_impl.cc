@@ -140,7 +140,7 @@ namespace gr {
 
       std::vector<tag_t> tags;
 
-
+		/*
       get_tags_in_window(tags, 0, 0, noutput_items, pmt::intern("trigger"));
 
       if (tags.size() > 0)
@@ -155,6 +155,7 @@ namespace gr {
           return 0;
         }
       }
+		*/
 	
 
       while (count < totalcount) {
