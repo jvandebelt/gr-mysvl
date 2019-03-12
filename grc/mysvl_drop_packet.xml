@@ -39,7 +39,7 @@
        * vlen
        * optional (set to 1 for optional inputs) -->
    	<source>
-		<name>in</name>
+		<name>out</name>
 		<type>complex</type>
 		<vlen>1</vlen>
 		<nports>1</nports>
