@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Tue Mar 12 11:19:14 2019
+# Generated: Tue Mar 12 13:00:27 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -23,6 +23,7 @@ from gnuradio import digital
 from gnuradio import eng_notation
 from gnuradio import gr
 from gnuradio import qtgui
+from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from gnuradio.qtgui import Range, RangeWidget
@@ -32,6 +33,7 @@ import mysvl
 import relative_paths  # embedded python module
 import sip
 import sys
+import time
 
 
 class top_block(gr.top_block, Qt.QWidget):
@@ -62,6 +64,7 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.freq = freq = 2375e6
         self.udp_len = udp_len = 1472*16
         self.time_preamble = time_preamble =  [0.125000+0.000000j, 0.522104-0.148216j, -0.495528+0.114832j, -0.267916+0.091700j, 0.236544-0.138456j, -0.098500+0.473800j, 0.476480-0.225344j, -0.187516+0.035372j, 0.051776-0.353552j, -0.104936+0.059916j,  0.228684+0.117504j, -0.530912+0.560756j, 0.359128+0.015872j, -0.132852+0.632840j, -0.105164-0.368872j, 0.368272-0.032412j, 0.125000+0.750000j, 0.463968+0.457792j, 0.151476-0.430948j, 0.685052+0.238524j, 0.494428+0.119428j, -0.557540-0.050056j, 0.416348+0.017368j, 0.104256-0.568836j, -0.301776-0.353552j, 0.079812+0.451516j, 0.439152+0.528072j, 0.642060+0.178484j, -0.090096+0.465096j, -0.446492+0.305776j, -0.111440-0.093688j, -0.538848-0.320228j, 0.125000+0.000000j, -0.538848+0.320228j, -0.111440+0.093688j, -0.446492-0.305776j, -0.090096-0.465096j, 0.642060-0.178484j, 0.439152-0.528072j, 0.079812-0.451516j, -0.301776+0.353552j, 0.104256+0.568836j, 0.416348-0.017368j, -0.557540+0.050056j, 0.494428-0.119428j, 0.685052-0.238524j, 0.151476+0.430948j, 0.463968-0.457792j, 0.125000-0.750000j, 0.368272+0.032412j, -0.105164+0.368872j, -0.132852-0.632840j, 0.359128-0.015872j, -0.530912-0.560756j, 0.228684-0.117504j, -0.104936-0.059916j, 0.051776+0.353552j, -0.187516-0.035372j, 0.476480+0.225344j, -0.098500-0.473800j, 0.236544+0.138456j, -0.267916-0.091700j, -0.495528-0.114832j, 0.522104+0.148216j]
         self.time_offset2 = time_offset2 = 1
@@ -73,16 +76,19 @@ class top_block(gr.top_block, Qt.QWidget):
         self.noise2 = noise2 = 0
         self.noise = noise = 0
         self.length = length = 96
+        self.gain2 = gain2 = 0.6
+        self.gain = gain = 0.6
         self.freq_offset2 = freq_offset2 = 0
         self.freq_offset = freq_offset = 0
+        self.freq2 = freq2 = freq+5e6
 
         ##################################################
         # Blocks
         ##################################################
-        self._time_offset2_range = Range(0.95, 1.05, 0.00001, 1, 200)
+        self._time_offset2_range = Range(0.95, 1.05, 0.000001, 1, 200)
         self._time_offset2_win = RangeWidget(self._time_offset2_range, self.set_time_offset2, "Time offset", "counter_slider", float)
         self.top_layout.addWidget(self._time_offset2_win)
-        self._time_offset_range = Range(0.95, 1.05, 0.00001, 1, 200)
+        self._time_offset_range = Range(0.95, 1.05, 0.000001, 1, 200)
         self._time_offset_win = RangeWidget(self._time_offset_range, self.set_time_offset, "Time offset", "counter_slider", float)
         self.top_layout.addWidget(self._time_offset_win)
         self._noise2_range = Range(0, 0.2, 0.0001, 0, 200)
@@ -97,6 +103,28 @@ class top_block(gr.top_block, Qt.QWidget):
         self._freq_offset_range = Range(0, 0.05, 0.0001, 0, 200)
         self._freq_offset_win = RangeWidget(self._freq_offset_range, self.set_freq_offset, "Freq offset", "counter_slider", float)
         self.top_layout.addWidget(self._freq_offset_win)
+        self.uhd_usrp_sink_0_0 = uhd.usrp_sink(
+        	",".join(("", "serial=30C6272")),
+        	uhd.stream_args(
+        		cpu_format="fc32",
+        		channels=range(1),
+        	),
+        )
+        self.uhd_usrp_sink_0_0.set_samp_rate(samp_rate)
+        self.uhd_usrp_sink_0_0.set_center_freq(freq, 0)
+        self.uhd_usrp_sink_0_0.set_normalized_gain(gain, 0)
+        self.uhd_usrp_sink_0_0.set_antenna("TX/RX", 0)
+        self.uhd_usrp_sink_0 = uhd.usrp_sink(
+        	",".join(("", "serial=30C628B")),
+        	uhd.stream_args(
+        		cpu_format="fc32",
+        		channels=range(1),
+        	),
+        )
+        self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
+        self.uhd_usrp_sink_0.set_center_freq(freq2, 0)
+        self.uhd_usrp_sink_0.set_normalized_gain(gain2, 0)
+        self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
         self.qtgui_time_sink_x_0_0_0 = qtgui.time_sink_c(
         	packet_len, #size
         	samp_rate, #samp_rate
@@ -283,7 +311,9 @@ class top_block(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_multiply_const_vxx_0_0_0, 0), (self.blocks_stream_mux_0_0, 1))    
         self.connect((self.blocks_multiply_const_vxx_0_0_0_0, 0), (self.blocks_stream_mux_0, 1))    
         self.connect((self.blocks_stream_mux_0, 0), (self.blocks_throttle_0_0, 0))    
+        self.connect((self.blocks_stream_mux_0, 0), (self.uhd_usrp_sink_0, 0))    
         self.connect((self.blocks_stream_mux_0_0, 0), (self.blocks_throttle_0, 0))    
+        self.connect((self.blocks_stream_mux_0_0, 0), (self.uhd_usrp_sink_0_0, 0))    
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_ofdm_tx_0, 0))    
         self.connect((self.blocks_throttle_0, 0), (self.channels_channel_model_0, 0))    
         self.connect((self.blocks_throttle_0_0, 0), (self.channels_channel_model_0_0, 0))    
@@ -306,6 +336,14 @@ class top_block(gr.top_block, Qt.QWidget):
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
+
+    def get_freq(self):
+        return self.freq
+
+    def set_freq(self, freq):
+        self.freq = freq
+        self.set_freq2(self.freq+5e6)
+        self.uhd_usrp_sink_0_0.set_center_freq(self.freq, 0)
 
     def get_udp_len(self):
         return self.udp_len
@@ -340,10 +378,12 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.blocks_throttle_0_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
+        self.uhd_usrp_sink_0_0.set_samp_rate(self.samp_rate)
+        self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
 
     def get_preamble_len(self):
         return self.preamble_len
@@ -385,6 +425,22 @@ class top_block(gr.top_block, Qt.QWidget):
         self.blocks_stream_to_tagged_stream_0.set_packet_len(self.length)
         self.blocks_stream_to_tagged_stream_0.set_packet_len_pmt(self.length)
 
+    def get_gain2(self):
+        return self.gain2
+
+    def set_gain2(self, gain2):
+        self.gain2 = gain2
+        self.uhd_usrp_sink_0.set_normalized_gain(self.gain2, 0)
+        	
+
+    def get_gain(self):
+        return self.gain
+
+    def set_gain(self, gain):
+        self.gain = gain
+        self.uhd_usrp_sink_0_0.set_normalized_gain(self.gain, 0)
+        	
+
     def get_freq_offset2(self):
         return self.freq_offset2
 
@@ -398,6 +454,13 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_freq_offset(self, freq_offset):
         self.freq_offset = freq_offset
         self.channels_channel_model_0.set_frequency_offset(self.freq_offset)
+
+    def get_freq2(self):
+        return self.freq2
+
+    def set_freq2(self, freq2):
+        self.freq2 = freq2
+        self.uhd_usrp_sink_0.set_center_freq(self.freq2, 0)
 
 
 def main(top_block_cls=top_block, options=None):
