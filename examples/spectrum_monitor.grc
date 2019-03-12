@@ -105,7 +105,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1101e6</value>
+      <value>2375e6</value>
     </param>
   </block>
   <block>
@@ -132,7 +132,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>0.6</value>
+      <value>0.2</value>
     </param>
   </block>
   <block>
@@ -159,7 +159,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>7000000</value>
+      <value>4000000</value>
     </param>
   </block>
   <block>
@@ -206,7 +206,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(448, 142)</value>
+      <value>(424, 150)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -442,11 +442,11 @@
     </param>
     <param>
       <key>ymax</key>
-      <value>-60</value>
+      <value>-20</value>
     </param>
     <param>
       <key>ymin</key>
-      <value>-140</value>
+      <value>-60</value>
     </param>
   </block>
   <block>
@@ -1370,7 +1370,7 @@
     </param>
     <param>
       <key>dev_args</key>
-      <value>"serial=30C628B"</value>
+      <value>"serial=30C62C3"</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -1378,7 +1378,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(176, 114)</value>
+      <value>(160, 115)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1394,11 +1394,11 @@
     </param>
     <param>
       <key>clock_source0</key>
-      <value>external</value>
+      <value></value>
     </param>
     <param>
       <key>sd_spec0</key>
-      <value></value>
+      <value>A:B</value>
     </param>
     <param>
       <key>time_source0</key>

@@ -141,12 +141,12 @@ namespace gr {
       std::vector<tag_t> tags;
 
 		/*
-      get_tags_in_range(tags, 0, 0, noutput_items, pmt::intern("trigger"));
+      get_tags_in_window(tags, 0, 0, noutput_items, pmt::intern("trigger"));
 
       if (tags.size() > 0)
       {
-        // printf("tag offset/fft span:
-        // %d\n",tags[0].offset%d_hypervisor.get_fft_span());
+		 tags[0].offset = tags[0].offset-nitems_read(0);
+         //printf("tag offset/fft span: %d\n",tags[0].offset%d_hypervisor.get_fft_span());
         if (tags[0].offset % d_hypervisor.get_fft_span() != 0)
         {
           printf("Unsynchronized tag. Dropping %lu samples\n", tags[0].offset);
@@ -156,6 +156,7 @@ namespace gr {
         }
       }
 		*/
+	
 
       while (count < totalcount) {
         for (unsigned int i = 0; i < d_ninputs; i++) {
