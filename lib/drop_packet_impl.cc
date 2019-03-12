@@ -46,6 +46,7 @@ namespace gr {
 		set_tag_propagation_policy(TPP_DONT);
 		set_output_multiple(d_packet_size);
 		d_drop=0;
+		//d_wait=0;
 	}
 
     /*
@@ -59,9 +60,12 @@ namespace gr {
     drop_packet_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
         ninput_items_required[0] = noutput_items;
-		ninput_items_required[1] = (noutput_items/d_packet_size)*2*sizeof(float);
-		set_output_multiple(d_packet_size);
-		}
+		
+		//	ninput_items_required[1] = (noutput_items/d_packet_size)*1*sizeof(float);
+		//set_output_multiple(d_packet_size);
+		//d_wait++;
+	}
+		
 
     int
     drop_packet_impl::general_work (int noutput_items,
@@ -100,13 +104,13 @@ namespace gr {
 			
 			if ((d_tags[i].offset % d_packet_size) != 0)
 		    {
-				d_drop++;
+				//d_drop++;
 		      	printf("Unsynchronized tag. Dropping %lu samples\n", d_tags[i].offset%d_packet_size);
 				//printf("total samples dropped is %lu\n", nitems_read(0)-nitems_written(0)+d_tags[i].offset% d_packet_size);
 
 				memcpy(out, &in[0], sizeof(gr_complex) * d_packet_size*(d_tags[i].offset/d_packet_size));
 			
-				get_tags_in_window(propagate_tags, 0,0, d_packet_size*(d_tags[i].offset/d_packet_size));
+				get_tags_in_window(propagate_tags, 0,0, d_packet_size*(d_tags[i].offset/d_packet_size), pmt::intern("trigger"));
 	           	BOOST_FOREACH(gr::tag_t t, propagate_tags){
 						t.offset = t.offset - nitems_read(0) + nitems_written(0); //fix new offset
 						//printf("Header value %d\n", header[header_offset]);
@@ -116,18 +120,21 @@ namespace gr {
 	            }
 
 				produce(0, d_packet_size*(d_tags[i].offset / d_packet_size));			  
-
-				consume(1, (d_tags[i].offset / d_packet_size)*sizeof(char));
+				
+				if((d_tags[i].offset / d_packet_size)*sizeof(char) <=ninput_items[1])
+					consume(1, (d_tags[i].offset / d_packet_size)*sizeof(char));
+				else
+					consume(1, ninput_items[1]);
 		      	consume(0, d_tags[i].offset);
 		      	set_history(ninput_items[0] - d_tags[i].offset);
 				return WORK_CALLED_PRODUCE;			
 		    }
 		}
 
-		if(d_drop){
-				add_item_tag(0, nitems_written(0) +1, pmt::intern("drop"), pmt::from_long(d_drop));     
-				d_drop=0;
-			}
+		//if(d_drop){
+				//add_item_tag(0, nitems_written(0) +1, pmt::intern("drop"), pmt::from_long(d_drop));     
+				//d_drop=0;
+			//}
 
 		//for(int i=0; i< ninput_items[1];i++) {
 		//	printf("Header value %f\n", header[i]);
@@ -135,7 +142,7 @@ namespace gr {
 	
 		memcpy(out, &in[0], sizeof(gr_complex) *d_packet_size*(ninput_items[0]/d_packet_size));
 		
-		get_tags_in_window(propagate_tags, 0,0, d_packet_size*(ninput_items[0]/d_packet_size));
+		get_tags_in_window(propagate_tags, 0,0, d_packet_size*(ninput_items[0]/d_packet_size), pmt::intern("trigger"));
 	            BOOST_FOREACH(gr::tag_t t, propagate_tags){;
 					t.offset = t.offset - nitems_read(0) + nitems_written(0); //fix new offset
 					//std::cout << "current tag keyis  " << t.key << std::endl;
@@ -151,7 +158,11 @@ namespace gr {
 		//}
 		
 		consume(0, d_packet_size*(ninput_items[0]/d_packet_size));
-		consume(1, sizeof(char)*(ninput_items[0]/d_packet_size));
+		if((sizeof(char)*(ninput_items[0]/d_packet_size)) <=ninput_items[1])
+				consume(1, sizeof(char)*(ninput_items[0]/d_packet_size));
+			else
+				consume(1, ninput_items[1]);
+
 		produce(0, d_packet_size*(ninput_items[0]/d_packet_size));
 		set_history(ninput_items[0]%d_packet_size);
 

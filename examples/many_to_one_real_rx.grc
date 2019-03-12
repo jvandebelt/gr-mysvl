@@ -663,7 +663,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -945,7 +945,7 @@
     </param>
     <param>
       <key>delay</key>
-      <value>4</value>
+      <value>2</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -1282,7 +1282,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1675,7 +1675,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>fft_len</key>
@@ -1963,7 +1963,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(568, 417)</value>
+      <value>(592, 417)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2006,7 +2006,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>fft_options</key>
@@ -2014,7 +2014,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(984, 385)</value>
+      <value>(1008, 385)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2073,7 +2073,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(792, 393)</value>
+      <value>(792, 401)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2262,7 +2262,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -3343,7 +3343,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(896, 470)</value>
+      <value>(1008, 478)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -4971,6 +4971,12 @@ os.chdir(script_path)
   </connection>
   <connection>
     <source_block_id>mysvl_drop_packet_0</source_block_id>
+    <sink_block_id>mysvl_svl_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>mysvl_drop_packet_0</source_block_id>
     <sink_block_id>mysvl_sync_channels_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
@@ -4980,6 +4986,12 @@ os.chdir(script_path)
     <sink_block_id>qtgui_time_sink_x_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>mysvl_drop_packet_0_0</source_block_id>
+    <sink_block_id>mysvl_svl_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>1</sink_key>
   </connection>
   <connection>
     <source_block_id>mysvl_drop_packet_0_0</source_block_id>
@@ -5007,9 +5019,21 @@ os.chdir(script_path)
   </connection>
   <connection>
     <source_block_id>mysvl_sync_channels_0</source_block_id>
+    <sink_block_id>qtgui_time_sink_x_0_0_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>mysvl_sync_channels_0</source_block_id>
     <sink_block_id>mysvl_svl_1</sink_block_id>
     <source_key>1</source_key>
     <sink_key>1</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>mysvl_sync_channels_0</source_block_id>
+    <sink_block_id>qtgui_time_sink_x_0_0_0_2</sink_block_id>
+    <source_key>1</source_key>
+    <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>mysvl_triggered_demux_0</source_block_id>

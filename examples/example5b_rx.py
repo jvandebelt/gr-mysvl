@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Example5B Rx
-# Generated: Mon Mar 11 17:19:45 2019
+# Generated: Tue Mar 12 10:04:30 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -75,52 +75,6 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         self._threshold_range = Range(0, 25, 0.25, 9.5, 200)
         self._threshold_win = RangeWidget(self._threshold_range, self.set_threshold, "Threshold", "counter_slider", float)
         self.top_grid_layout.addWidget(self._threshold_win, 0,0,1,2)
-        self.qtgui_time_sink_x_0_1 = qtgui.time_sink_f(
-        	64, #size
-        	samp_rate, #samp_rate
-        	 "GMSK  Header 2", #name
-        	1 #number of inputs
-        )
-        self.qtgui_time_sink_x_0_1.set_update_time(0.10)
-        self.qtgui_time_sink_x_0_1.set_y_axis(-1, 1)
-        
-        self.qtgui_time_sink_x_0_1.set_y_label("Amplitude", "")
-        
-        self.qtgui_time_sink_x_0_1.enable_tags(-1, True)
-        self.qtgui_time_sink_x_0_1.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_1.enable_autoscale(True)
-        self.qtgui_time_sink_x_0_1.enable_grid(False)
-        self.qtgui_time_sink_x_0_1.enable_control_panel(False)
-        
-        if not True:
-          self.qtgui_time_sink_x_0_1.disable_legend()
-        
-        labels = ["Bytes", "", "", "", "",
-                  "", "", "", "", ""]
-        widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-                  "magenta", "yellow", "dark red", "dark green", "blue"]
-        styles = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-                   -1, -1, -1, -1, -1]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        
-        for i in xrange(1):
-            if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0_1.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_time_sink_x_0_1.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0_1.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0_1.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0_1.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0_1.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0_1.set_line_alpha(i, alphas[i])
-        
-        self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_1_win, 4,0,1,1)
         self.qtgui_time_sink_x_0_0_0_2 = qtgui.time_sink_c(
         	1024, #size
         	samp_rate, #samp_rate
@@ -219,25 +173,25 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         
         self._qtgui_time_sink_x_0_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_0_win, 1,0,1,1)
-        self.qtgui_time_sink_x_0_0 = qtgui.time_sink_f(
-        	64, #size
+        self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
+        	1024, #size
         	samp_rate, #samp_rate
-        	"GMSK  Header 1", #name
+        	"Demodulated OFDM  Data", #name
         	1 #number of inputs
         )
-        self.qtgui_time_sink_x_0_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0_0.set_y_axis(-1, 1)
+        self.qtgui_time_sink_x_0.set_update_time(0.10)
+        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
         
-        self.qtgui_time_sink_x_0_0.set_y_label("Amplitude", "")
+        self.qtgui_time_sink_x_0.set_y_label("Amplitude", "")
         
-        self.qtgui_time_sink_x_0_0.enable_tags(-1, True)
-        self.qtgui_time_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0.enable_autoscale(True)
-        self.qtgui_time_sink_x_0_0.enable_grid(False)
-        self.qtgui_time_sink_x_0_0.enable_control_panel(False)
+        self.qtgui_time_sink_x_0.enable_tags(-1, True)
+        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_0.enable_autoscale(True)
+        self.qtgui_time_sink_x_0.enable_grid(False)
+        self.qtgui_time_sink_x_0.enable_control_panel(False)
         
         if not True:
-          self.qtgui_time_sink_x_0_0.disable_legend()
+          self.qtgui_time_sink_x_0.disable_legend()
         
         labels = ["Bytes", "", "", "", "",
                   "", "", "", "", ""]
@@ -254,19 +208,20 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         
         for i in xrange(1):
             if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
+                self.qtgui_time_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
-                self.qtgui_time_sink_x_0_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0_0.set_line_alpha(i, alphas[i])
+                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
         
-        self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win, 3,0,1,1)
+        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 5,0,1,2)
         self.mysvl_triggered_demux_0_0 = mysvl.triggered_demux(gr.sizeof_gr_complex*1, gr.sizeof_float, (preamble_len,number_len,packet_len), 1, True)
         self.mysvl_triggered_demux_0 = mysvl.triggered_demux(gr.sizeof_gr_complex*1, gr.sizeof_float, (preamble_len, number_len,packet_len), 1, True)
+        self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, "./inputs/spectrum_maps/one_many_rx.txt", "./inputs/parameters/one_many_rx.txt")
         self.mysvl_drop_packet_0_0 = mysvl.drop_packet(1024)
         self.mysvl_drop_packet_0 = mysvl.drop_packet(1024)
         self.digital_psk_demod_0_0 = digital.psk.psk_demod(
@@ -291,6 +246,15 @@ class example5b_rx(gr.top_block, Qt.QWidget):
           verbose=False,
           log=False,
           )
+        self.digital_ofdm_rx_0 = digital.ofdm_rx(
+        	  fft_len=64, cp_len=16,
+        	  frame_length_tag_key='frame_'+"length",
+        	  packet_length_tag_key="length",
+        	  bps_header=1,
+        	  bps_payload=2,
+        	  debug_log=False,
+        	  scramble_bits=False
+        	 )
         self.digital_corr_est_cc_0_0 = digital.corr_est_cc((time_preamble), 1, 0, 0.99)
         self.digital_corr_est_cc_0 = digital.corr_est_cc((time_preamble), 1, 0, 0.99)
         self.blocks_udp_source_0_0 = blocks.udp_source(gr.sizeof_gr_complex*1, "127.0.0.2", 4000, udp_len, True)
@@ -299,6 +263,7 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         (self.blocks_udp_source_0).set_min_output_buffer(1000000)
         self.blocks_threshold_ff_0_0 = blocks.threshold_ff(threshold, threshold, 0)
         self.blocks_threshold_ff_0 = blocks.threshold_ff(threshold, threshold, 0)
+        self.blocks_tag_gate_1 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_pack_k_bits_bb_0_0 = blocks.pack_k_bits_bb(8)
@@ -311,6 +276,7 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
         self.blocks_char_to_float_1 = blocks.char_to_float(1, 1)
         self.blocks_char_to_float_0_1 = blocks.char_to_float(1, 1)
+        self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.blocks_abs_xx_1_0 = blocks.abs_ff(1)
         self.blocks_abs_xx_1 = blocks.abs_ff(1)
 
@@ -319,10 +285,9 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_abs_xx_1, 0), (self.blocks_threshold_ff_0, 0))    
         self.connect((self.blocks_abs_xx_1_0, 0), (self.blocks_threshold_ff_0_0, 0))    
+        self.connect((self.blocks_char_to_float_0, 0), (self.qtgui_time_sink_x_0, 0))    
         self.connect((self.blocks_char_to_float_0_1, 0), (self.mysvl_drop_packet_0_0, 1))    
-        self.connect((self.blocks_char_to_float_0_1, 0), (self.qtgui_time_sink_x_0_1, 0))    
         self.connect((self.blocks_char_to_float_1, 0), (self.mysvl_drop_packet_0, 1))    
-        self.connect((self.blocks_char_to_float_1, 0), (self.qtgui_time_sink_x_0_0, 0))    
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_abs_xx_1, 0))    
         self.connect((self.blocks_complex_to_float_0_0, 0), (self.blocks_abs_xx_1_0, 0))    
         self.connect((self.blocks_delay_0, 0), (self.blocks_pack_k_bits_bb_0, 0))    
@@ -331,6 +296,7 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_pack_k_bits_bb_0_0, 0), (self.blocks_char_to_float_0_1, 0))    
         self.connect((self.blocks_tag_gate_0, 0), (self.mysvl_triggered_demux_0, 0))    
         self.connect((self.blocks_tag_gate_0_0, 0), (self.mysvl_triggered_demux_0_0, 0))    
+        self.connect((self.blocks_tag_gate_1, 0), (self.digital_ofdm_rx_0, 0))    
         self.connect((self.blocks_threshold_ff_0, 0), (self.mysvl_triggered_demux_0, 1))    
         self.connect((self.blocks_threshold_ff_0_0, 0), (self.mysvl_triggered_demux_0_0, 1))    
         self.connect((self.blocks_udp_source_0, 0), (self.digital_corr_est_cc_0, 0))    
@@ -339,10 +305,12 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         self.connect((self.digital_corr_est_cc_0, 0), (self.blocks_tag_gate_0, 0))    
         self.connect((self.digital_corr_est_cc_0_0, 1), (self.blocks_complex_to_float_0_0, 0))    
         self.connect((self.digital_corr_est_cc_0_0, 0), (self.blocks_tag_gate_0_0, 0))    
+        self.connect((self.digital_ofdm_rx_0, 0), (self.blocks_char_to_float_0, 0))    
         self.connect((self.digital_psk_demod_0, 0), (self.blocks_delay_0, 0))    
         self.connect((self.digital_psk_demod_0_0, 0), (self.blocks_delay_0_0, 0))    
-        self.connect((self.mysvl_drop_packet_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))    
-        self.connect((self.mysvl_drop_packet_0_0, 0), (self.qtgui_time_sink_x_0_0_0_2, 0))    
+        self.connect((self.mysvl_drop_packet_0, 0), (self.mysvl_svl_1, 0))    
+        self.connect((self.mysvl_drop_packet_0_0, 0), (self.mysvl_svl_1, 1))    
+        self.connect((self.mysvl_svl_1, 0), (self.blocks_tag_gate_1, 0))    
         self.connect((self.mysvl_triggered_demux_0, 0), (self.blocks_null_sink_1, 0))    
         self.connect((self.mysvl_triggered_demux_0, 1), (self.digital_psk_demod_0, 0))    
         self.connect((self.mysvl_triggered_demux_0, 2), (self.mysvl_drop_packet_0, 0))    
@@ -383,10 +351,9 @@ class example5b_rx(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_time_sink_x_0_0_0_2.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
-        self.qtgui_time_sink_x_0_1.set_samp_rate(self.samp_rate)
-        self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0_0_0_2.set_samp_rate(self.samp_rate)
 
     def get_preamble_len(self):
         return self.preamble_len

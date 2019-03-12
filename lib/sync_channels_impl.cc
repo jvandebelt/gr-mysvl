@@ -74,6 +74,7 @@ namespace gr {
       	return true;
     }	
 
+	/*
 	bool sync_channels_impl::drop_samples(int drop[], int drop_offsets[]){
 	
 		//std::cout<< "in drop samples" << std::endl;
@@ -115,6 +116,82 @@ namespace gr {
 		return true;
 	}
 
+	*/
+
+	int factorial(int n)
+		{
+		  return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
+		}
+	
+	bool sync_channels_impl::drop_samples(int trigger_values[], int packets_to_drop[]){
+		
+		bool values_exist=true;
+		bool same_value = true;
+		int number_of_comparisons = factorial(d_ninputs)/2;
+		int d_closest_values[number_of_comparisons];
+		int largest_difference=0;
+		int first_stream=0;
+		int d_index=0;
+
+		//printf("in drop_samples. size of d_closest is %d\n", number_of_comparisons);
+
+		// if no value, don't drop packets
+		for(int i=0; i< d_ninputs; i++){
+			if(trigger_values[i] <1 || trigger_values[i]>64){
+				values_exist=false;
+				//printf("input %d drop of %d \n",i, (drop[i]%d_packet_length));
+				}
+			if(trigger_values[i]!= trigger_values[0]){
+				same_value=false;
+				}
+			for(int j=i; j<d_ninputs;j++){
+				if(j!=i){
+					d_closest_values[d_index]=trigger_values[i]-trigger_values[j];
+					//printf("difference of input %d value and input %d value is %d\n",i, j, d_closest_values[d_index]);
+					//printf("i is %d value and j is %d\n",i, j);
+					if(abs(d_closest_values[d_index])>=largest_difference){
+						largest_difference=abs(d_closest_values[d_index]);
+						if(d_closest_values[d_index]>=0)
+							first_stream=i;
+						else
+							first_stream=j;
+					}
+					d_index++;
+				}
+			}
+		}
+			
+
+		if(!values_exist){		// outside range
+			return false;
+		}	
+		
+		if(same_value){			// all the same
+			return false;
+		}
+			
+				//printf("input %d drop of %d \n",i, (drop[i]%d_packet_length));
+				
+			//keep track of highest drop - for next part
+			
+
+		//std::cout<< "offsets_exist" <<offsets_exist <<std::endl;
+		
+		//printf("First stream is %d\n", first_stream);
+
+		for(int i=0; i< d_ninputs; i++){
+			packets_to_drop[i]=abs(trigger_values[first_stream]-trigger_values[i]);
+		}
+			
+
+		//not alligned: need to drop from all except the stream(s) with highest drop
+		
+		//for(int i=0; i< d_ninputs; i++){
+			//drop_offsets[i]=d_highest_value-trigger_values[i];
+		//}
+		return true;
+	}	
+
 	bool sync_channels_impl::check_size(int items_in[], int items_out, gr_vector_int &ninput_items, int noutput_items){
 		for(int i=0; i< d_ninputs; i++){
 			if(ninput_items[i]-items_in[i] < d_packet_length)
@@ -154,8 +231,9 @@ namespace gr {
 		gr_vector_int output_index(d_ninputs, 0); // Items written
       	std::vector<gr::tag_t> tags;
 		std::vector<gr::tag_t> propagate_tags;
-		int drop[d_ninputs];
-		int drop_offsets[d_ninputs];
+		int trigger_values[d_ninputs];
+		int packets_to_drop[d_ninputs];
+		bool d_stop=false;
 
 				
 		//drop_samples(offsets, drop_offsets);
@@ -178,39 +256,47 @@ namespace gr {
 			//gr::thread::scoped_lock guard(d_setlock);			
 		
 			for(int i = 0; i <d_ninputs; i++) {
-				drop[i] =0;
-				drop_offsets[i]=0;
+				trigger_values[i] =0;
+				packets_to_drop[i]=0;
 			}	
 
 			for(int i = 0; i <d_ninputs; i++) {
 				get_tags_in_window(tags, i, items_in[i], items_in[i]+d_packet_length, pmt::intern("trigger"));
-				if (tags.size() > 0 && d_dropped[i]==false){
-					drop[i]=pmt::to_long(tags[0].value);
-					printf("Input %d drop %d packet\n",i, drop[i]);
-					d_dropped[i]=true;
-				}
-				else{
-					d_dropped[i]=false;
-				}
+				if (tags.size() > 0){
+					trigger_values[i]=pmt::to_long(tags[0].value);
+					//printf("Input %d drop %d packet\n",i, trigger_values[i]);
+					}
 				tags.clear();
 		  	}
 
-			
-			if(drop_samples(drop, drop_offsets)){
+			if(drop_samples(trigger_values, packets_to_drop)){
 				for(int i = 0; i <d_ninputs; i++) {
-					printf("Input %d: need to drop %d packets \n", i, drop_offsets[i]);
+					printf("Input %d: need to drop %d packets \n", i, packets_to_drop[i]);
 					//consume(i, d_packet_length*drop_offsets[i]);
-					items_in[i]+=d_packet_length*drop_offsets[i];
+					if(d_packet_length*packets_to_drop[i]<=ninput_items[i] || d_stop)
+						items_in[i]+=d_packet_length*packets_to_drop[i];
+					else{
+						items_in[i]+=ninput_items[i];
+						d_stop=true;
 					}
+					if(d_stop){
+						for(int i = 0; i < d_ninputs; i++) {
+							consume((int) i, items_in[i]);
+							produce((int) i, items_out);
+		  				}
+						return WORK_CALLED_PRODUCE;
+					}
+				}
 			}	
 			else{
 				for(int i = 0; i <d_ninputs; i++) {
 					memcpy(out[i]+items_in[i]*d_itemsize, in[i], d_itemsize*d_packet_length);
 					in[i] += d_packet_length*d_itemsize;
 							
-					get_tags_in_window(propagate_tags, i,items_in[i], items_in[i] + d_packet_length);
+					get_tags_in_window(propagate_tags, i,items_in[i], items_in[i] + d_packet_length), pmt::intern("trigger");
 		            BOOST_FOREACH(gr::tag_t t, propagate_tags){;
-		              add_item_tag(i, t);
+						t.offset = t.offset - nitems_read(i) -items_in[i] + nitems_written(i) +items_out; //fix new offset
+		            	add_item_tag(i, t);
 		            }
 					items_in[i]+=d_packet_length;
 				}

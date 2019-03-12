@@ -32,6 +32,7 @@ namespace gr {
 		int d_packet_size;
 		std::vector<tag_t> d_tags;
 		int d_drop; //number of packets for other streams to drop to be in sync with this one
+		//unsigned long d_wait;
 
 		public:
 		drop_packet_impl(int packet_size);

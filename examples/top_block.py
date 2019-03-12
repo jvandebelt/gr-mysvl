@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Mon Mar 11 17:14:11 2019
+# Generated: Tue Mar 12 11:19:14 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -17,7 +17,6 @@ if __name__ == '__main__':
             print "Warning: failed to XInitThreads()"
 
 from PyQt4 import Qt
-from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import channels
 from gnuradio import digital
@@ -27,7 +26,9 @@ from gnuradio import qtgui
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from gnuradio.qtgui import Range, RangeWidget
+from grc_gnuradio import blks2 as grc_blks2
 from optparse import OptionParser
+import mysvl
 import relative_paths  # embedded python module
 import sip
 import sys
@@ -65,10 +66,10 @@ class top_block(gr.top_block, Qt.QWidget):
         self.time_preamble = time_preamble =  [0.125000+0.000000j, 0.522104-0.148216j, -0.495528+0.114832j, -0.267916+0.091700j, 0.236544-0.138456j, -0.098500+0.473800j, 0.476480-0.225344j, -0.187516+0.035372j, 0.051776-0.353552j, -0.104936+0.059916j,  0.228684+0.117504j, -0.530912+0.560756j, 0.359128+0.015872j, -0.132852+0.632840j, -0.105164-0.368872j, 0.368272-0.032412j, 0.125000+0.750000j, 0.463968+0.457792j, 0.151476-0.430948j, 0.685052+0.238524j, 0.494428+0.119428j, -0.557540-0.050056j, 0.416348+0.017368j, 0.104256-0.568836j, -0.301776-0.353552j, 0.079812+0.451516j, 0.439152+0.528072j, 0.642060+0.178484j, -0.090096+0.465096j, -0.446492+0.305776j, -0.111440-0.093688j, -0.538848-0.320228j, 0.125000+0.000000j, -0.538848+0.320228j, -0.111440+0.093688j, -0.446492-0.305776j, -0.090096-0.465096j, 0.642060-0.178484j, 0.439152-0.528072j, 0.079812-0.451516j, -0.301776+0.353552j, 0.104256+0.568836j, 0.416348-0.017368j, -0.557540+0.050056j, 0.494428-0.119428j, 0.685052-0.238524j, 0.151476+0.430948j, 0.463968-0.457792j, 0.125000-0.750000j, 0.368272+0.032412j, -0.105164+0.368872j, -0.132852-0.632840j, 0.359128-0.015872j, -0.530912-0.560756j, 0.228684-0.117504j, -0.104936-0.059916j, 0.051776+0.353552j, -0.187516-0.035372j, 0.476480+0.225344j, -0.098500-0.473800j, 0.236544+0.138456j, -0.267916-0.091700j, -0.495528-0.114832j, 0.522104+0.148216j]
         self.time_offset2 = time_offset2 = 1
         self.time_offset = time_offset = 1
-        self.samp_rate = samp_rate = 50000
+        self.samp_rate = samp_rate = 500000
         self.preamble_len = preamble_len = 64
-        self.packet_len = packet_len = 1024
-        self.number_len = number_len = 64
+        self.packet_len = packet_len = 1024*4
+        self.number_len = number_len = 6*4*8
         self.noise2 = noise2 = 0
         self.noise = noise = 0
         self.length = length = 96
@@ -97,7 +98,7 @@ class top_block(gr.top_block, Qt.QWidget):
         self._freq_offset_win = RangeWidget(self._freq_offset_range, self.set_freq_offset, "Freq offset", "counter_slider", float)
         self.top_layout.addWidget(self._freq_offset_win)
         self.qtgui_time_sink_x_0_0_0 = qtgui.time_sink_c(
-        	1024, #size
+        	packet_len, #size
         	samp_rate, #samp_rate
         	"", #name
         	1 #number of inputs
@@ -146,7 +147,7 @@ class top_block(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_0_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_0_win, 2,0,1,1)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
-        	1024, #size
+        	packet_len, #size
         	samp_rate, #samp_rate
         	"", #name
         	1 #number of inputs
@@ -194,18 +195,34 @@ class top_block(gr.top_block, Qt.QWidget):
         
         self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win, 1,0,1,1)
-        self.digital_gmsk_mod_0_0 = digital.gmsk_mod(
-        	samples_per_symbol=2,
-        	bt=0.35,
-        	verbose=False,
-        	log=False,
-        )
-        self.digital_gmsk_mod_0 = digital.gmsk_mod(
-        	samples_per_symbol=2,
-        	bt=0.35,
-        	verbose=False,
-        	log=False,
-        )
+        self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, "./inputs/spectrum_maps/one_many_tx.txt", "./inputs/parameters/one_many_tx.txt")
+        self.digital_psk_mod_0_0 = digital.psk.psk_mod(
+          constellation_points=2,
+          mod_code="gray",
+          differential=True,
+          samples_per_symbol=2,
+          excess_bw=0.35,
+          verbose=False,
+          log=False,
+          )
+        self.digital_psk_mod_0 = digital.psk.psk_mod(
+          constellation_points=2,
+          mod_code="gray",
+          differential=True,
+          samples_per_symbol=2,
+          excess_bw=0.35,
+          verbose=False,
+          log=False,
+          )
+        self.digital_ofdm_tx_0 = digital.ofdm_tx(
+        	  fft_len=64, cp_len=16,
+        	  packet_length_tag_key="length",
+        	  bps_header=1,
+        	  bps_payload=2,
+        	  rolloff=0,
+        	  debug_log=False,
+        	  scramble_bits=False
+        	 )
         self.channels_channel_model_0_0 = channels.channel_model(
         	noise_voltage=noise2,
         	frequency_offset=freq_offset2,
@@ -230,38 +247,59 @@ class top_block(gr.top_block, Qt.QWidget):
         self.blocks_udp_sink_0 = blocks.udp_sink(gr.sizeof_gr_complex*1, "127.0.0.1", 4000, udp_len, True)
         self.blocks_throttle_0_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
+        self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, length, "length")
         self.blocks_stream_mux_0_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (preamble_len, number_len,packet_len))
         self.blocks_stream_mux_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (preamble_len, number_len,packet_len))
-        self.blocks_multiply_const_vxx_1_0 = blocks.multiply_const_vcc((0.5, ))
-        self.blocks_multiply_const_vxx_1 = blocks.multiply_const_vcc((0.5, ))
         self.blocks_multiply_const_vxx_0_0_0_0 = blocks.multiply_const_vcc((0.5, ))
         self.blocks_multiply_const_vxx_0_0_0 = blocks.multiply_const_vcc((0.5, ))
-        self.analog_sig_source_x_0_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 100, 1, 0)
-        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 1000, 1, 0)
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.05, ))
+        self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_char*1, "./inputs/Memory_and_Forgetting.mp3", True)
+        self.blks2_packet_encoder_0_0 = grc_blks2.packet_mod_b(grc_blks2.packet_encoder(
+        		samples_per_symbol=2,
+        		bits_per_symbol=1,
+        		preamble="",
+        		access_code="",
+        		pad_for_usrp=True,
+        	),
+        	payload_length=1,
+        )
+        self.blks2_packet_encoder_0 = grc_blks2.packet_mod_b(grc_blks2.packet_encoder(
+        		samples_per_symbol=2,
+        		bits_per_symbol=1,
+        		preamble="",
+        		access_code="",
+        		pad_for_usrp=True,
+        	),
+        	payload_length=1,
+        )
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_const_vxx_1, 0))    
-        self.connect((self.analog_sig_source_x_0_0, 0), (self.blocks_multiply_const_vxx_1_0, 0))    
+        self.connect((self.blks2_packet_encoder_0, 0), (self.digital_psk_mod_0, 0))    
+        self.connect((self.blks2_packet_encoder_0_0, 0), (self.digital_psk_mod_0_0, 0))    
+        self.connect((self.blocks_file_source_0_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))    
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.mysvl_svl_1, 0))    
         self.connect((self.blocks_multiply_const_vxx_0_0_0, 0), (self.blocks_stream_mux_0_0, 1))    
         self.connect((self.blocks_multiply_const_vxx_0_0_0_0, 0), (self.blocks_stream_mux_0, 1))    
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.blocks_stream_mux_0_0, 2))    
-        self.connect((self.blocks_multiply_const_vxx_1_0, 0), (self.blocks_stream_mux_0, 2))    
         self.connect((self.blocks_stream_mux_0, 0), (self.blocks_throttle_0_0, 0))    
         self.connect((self.blocks_stream_mux_0_0, 0), (self.blocks_throttle_0, 0))    
+        self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.digital_ofdm_tx_0, 0))    
         self.connect((self.blocks_throttle_0, 0), (self.channels_channel_model_0, 0))    
         self.connect((self.blocks_throttle_0_0, 0), (self.channels_channel_model_0_0, 0))    
         self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_stream_mux_0, 0))    
         self.connect((self.blocks_vector_source_x_0_0, 0), (self.blocks_stream_mux_0_0, 0))    
-        self.connect((self.blocks_vector_source_x_1_0, 0), (self.digital_gmsk_mod_0, 0))    
-        self.connect((self.blocks_vector_source_x_1_0_0, 0), (self.digital_gmsk_mod_0_0, 0))    
+        self.connect((self.blocks_vector_source_x_1_0, 0), (self.blks2_packet_encoder_0, 0))    
+        self.connect((self.blocks_vector_source_x_1_0_0, 0), (self.blks2_packet_encoder_0_0, 0))    
         self.connect((self.channels_channel_model_0, 0), (self.blocks_udp_sink_0, 0))    
         self.connect((self.channels_channel_model_0, 0), (self.qtgui_time_sink_x_0_0, 0))    
         self.connect((self.channels_channel_model_0_0, 0), (self.blocks_udp_sink_0_0, 0))    
         self.connect((self.channels_channel_model_0_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))    
-        self.connect((self.digital_gmsk_mod_0, 0), (self.blocks_multiply_const_vxx_0_0_0, 0))    
-        self.connect((self.digital_gmsk_mod_0_0, 0), (self.blocks_multiply_const_vxx_0_0_0_0, 0))    
+        self.connect((self.digital_ofdm_tx_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
+        self.connect((self.digital_psk_mod_0, 0), (self.blocks_multiply_const_vxx_0_0_0, 0))    
+        self.connect((self.digital_psk_mod_0_0, 0), (self.blocks_multiply_const_vxx_0_0_0_0, 0))    
+        self.connect((self.mysvl_svl_1, 1), (self.blocks_stream_mux_0, 2))    
+        self.connect((self.mysvl_svl_1, 0), (self.blocks_stream_mux_0_0, 2))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "top_block")
@@ -280,8 +318,8 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_time_preamble(self, time_preamble):
         self.time_preamble = time_preamble
-        self.blocks_vector_source_x_0_0.set_data(self.time_preamble, [])
         self.blocks_vector_source_x_0.set_data(self.time_preamble, [])
+        self.blocks_vector_source_x_0_0.set_data(self.time_preamble, [])
 
     def get_time_offset2(self):
         return self.time_offset2
@@ -306,8 +344,6 @@ class top_block(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
-        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
-        self.analog_sig_source_x_0_0.set_sampling_freq(self.samp_rate)
 
     def get_preamble_len(self):
         return self.preamble_len
@@ -346,6 +382,8 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_length(self, length):
         self.length = length
+        self.blocks_stream_to_tagged_stream_0.set_packet_len(self.length)
+        self.blocks_stream_to_tagged_stream_0.set_packet_len_pmt(self.length)
 
     def get_freq_offset2(self):
         return self.freq_offset2
