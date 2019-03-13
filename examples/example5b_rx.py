@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Example5B Rx
-# Generated: Tue Mar 12 10:04:30 2019
+# Generated: Wed Mar 13 13:21:22 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -25,6 +25,7 @@ from gnuradio import qtgui
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from gnuradio.qtgui import Range, RangeWidget
+from grc_gnuradio import blks2 as grc_blks2
 from optparse import OptionParser
 import mysvl
 import relative_paths  # embedded python module
@@ -60,13 +61,13 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.udp_len = udp_len = 1472*16
+        self.udp_len = udp_len = 1472*8
         self.time_preamble = time_preamble =  [0.125000+0.000000j, 0.522104-0.148216j, -0.495528+0.114832j, -0.267916+0.091700j, 0.236544-0.138456j, -0.098500+0.473800j, 0.476480-0.225344j, -0.187516+0.035372j, 0.051776-0.353552j, -0.104936+0.059916j,  0.228684+0.117504j, -0.530912+0.560756j, 0.359128+0.015872j, -0.132852+0.632840j, -0.105164-0.368872j, 0.368272-0.032412j, 0.125000+0.750000j, 0.463968+0.457792j, 0.151476-0.430948j, 0.685052+0.238524j, 0.494428+0.119428j, -0.557540-0.050056j, 0.416348+0.017368j, 0.104256-0.568836j, -0.301776-0.353552j, 0.079812+0.451516j, 0.439152+0.528072j, 0.642060+0.178484j, -0.090096+0.465096j, -0.446492+0.305776j, -0.111440-0.093688j, -0.538848-0.320228j, 0.125000+0.000000j, -0.538848+0.320228j, -0.111440+0.093688j, -0.446492-0.305776j, -0.090096-0.465096j, 0.642060-0.178484j, 0.439152-0.528072j, 0.079812-0.451516j, -0.301776+0.353552j, 0.104256+0.568836j, 0.416348-0.017368j, -0.557540+0.050056j, 0.494428-0.119428j, 0.685052-0.238524j, 0.151476+0.430948j, 0.463968-0.457792j, 0.125000-0.750000j, 0.368272+0.032412j, -0.105164+0.368872j, -0.132852-0.632840j, 0.359128-0.015872j, -0.530912-0.560756j, 0.228684-0.117504j, -0.104936-0.059916j, 0.051776+0.353552j, -0.187516-0.035372j, 0.476480+0.225344j, -0.098500-0.473800j, 0.236544+0.138456j, -0.267916-0.091700j, -0.495528-0.114832j, 0.522104+0.148216j]
         self.threshold = threshold = 9.5
-        self.samp_rate = samp_rate = 5000
+        self.samp_rate = samp_rate = 400000
         self.preamble_len = preamble_len = 64
         self.packet_len = packet_len = 1024
-        self.number_len = number_len = 64
+        self.number_len = number_len = 64*3
         self.length = length = 96
 
         ##################################################
@@ -221,79 +222,85 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 5,0,1,2)
         self.mysvl_triggered_demux_0_0 = mysvl.triggered_demux(gr.sizeof_gr_complex*1, gr.sizeof_float, (preamble_len,number_len,packet_len), 1, True)
         self.mysvl_triggered_demux_0 = mysvl.triggered_demux(gr.sizeof_gr_complex*1, gr.sizeof_float, (preamble_len, number_len,packet_len), 1, True)
+        self.mysvl_sync_channels_0 = mysvl.sync_channels(1024)
         self.mysvl_svl_1 = mysvl.svl(gr.sizeof_gr_complex*1, 1, "./inputs/spectrum_maps/one_many_rx.txt", "./inputs/parameters/one_many_rx.txt")
         self.mysvl_drop_packet_0_0 = mysvl.drop_packet(1024)
         self.mysvl_drop_packet_0 = mysvl.drop_packet(1024)
-        self.digital_psk_demod_0_0 = digital.psk.psk_demod(
-          constellation_points=4,
-          differential=True,
-          samples_per_symbol=2,
-          excess_bw=0.35,
-          phase_bw=6.28/100.0,
-          timing_bw=6.28/100.0,
-          mod_code="gray",
-          verbose=False,
-          log=False,
-          )
-        self.digital_psk_demod_0 = digital.psk.psk_demod(
-          constellation_points=2,
-          differential=True,
-          samples_per_symbol=2,
-          excess_bw=0.35,
-          phase_bw=6.28/100.0,
-          timing_bw=6.28/100.0,
-          mod_code="gray",
-          verbose=False,
-          log=False,
-          )
         self.digital_ofdm_rx_0 = digital.ofdm_rx(
         	  fft_len=64, cp_len=16,
         	  frame_length_tag_key='frame_'+"length",
         	  packet_length_tag_key="length",
         	  bps_header=1,
-        	  bps_payload=2,
+        	  bps_payload=1,
         	  debug_log=False,
         	  scramble_bits=False
         	 )
+        self.digital_gfsk_demod_0_0 = digital.gfsk_demod(
+        	samples_per_symbol=2,
+        	sensitivity=1.0,
+        	gain_mu=0.175,
+        	mu=0.5,
+        	omega_relative_limit=0.005,
+        	freq_error=0.0,
+        	verbose=False,
+        	log=False,
+        )
+        self.digital_gfsk_demod_0 = digital.gfsk_demod(
+        	samples_per_symbol=2,
+        	sensitivity=1.0,
+        	gain_mu=0.175,
+        	mu=0.5,
+        	omega_relative_limit=0.005,
+        	freq_error=0.0,
+        	verbose=False,
+        	log=False,
+        )
         self.digital_corr_est_cc_0_0 = digital.corr_est_cc((time_preamble), 1, 0, 0.99)
         self.digital_corr_est_cc_0 = digital.corr_est_cc((time_preamble), 1, 0, 0.99)
         self.blocks_udp_source_0_0 = blocks.udp_source(gr.sizeof_gr_complex*1, "127.0.0.2", 4000, udp_len, True)
         (self.blocks_udp_source_0_0).set_min_output_buffer(1000000)
         self.blocks_udp_source_0 = blocks.udp_source(gr.sizeof_gr_complex*1, "127.0.0.1", 4000, udp_len, True)
         (self.blocks_udp_source_0).set_min_output_buffer(1000000)
+        self.blocks_udp_sink_0 = blocks.udp_sink(gr.sizeof_char*1, "127.0.0.1", 3001, 1472, True)
         self.blocks_threshold_ff_0_0 = blocks.threshold_ff(threshold, threshold, 0)
         self.blocks_threshold_ff_0 = blocks.threshold_ff(threshold, threshold, 0)
         self.blocks_tag_gate_1 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
-        self.blocks_pack_k_bits_bb_0_0 = blocks.pack_k_bits_bb(8)
-        self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
         self.blocks_null_sink_1_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
         self.blocks_null_sink_1 = blocks.null_sink(gr.sizeof_gr_complex*1)
-        self.blocks_delay_0_0 = blocks.delay(gr.sizeof_char*1, 4)
-        self.blocks_delay_0 = blocks.delay(gr.sizeof_char*1, 2)
         self.blocks_complex_to_float_0_0 = blocks.complex_to_float(1)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
-        self.blocks_char_to_float_1 = blocks.char_to_float(1, 1)
-        self.blocks_char_to_float_0_1 = blocks.char_to_float(1, 1)
+        self.blocks_char_to_float_0_0_0 = blocks.char_to_float(1, 1)
+        self.blocks_char_to_float_0_0 = blocks.char_to_float(1, 1)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.blocks_abs_xx_1_0 = blocks.abs_ff(1)
         self.blocks_abs_xx_1 = blocks.abs_ff(1)
+        self.blks2_packet_decoder_0_0 = grc_blks2.packet_demod_b(grc_blks2.packet_decoder(
+        		access_code="",
+        		threshold=-1,
+        		callback=lambda ok, payload: self.blks2_packet_decoder_0_0.recv_pkt(ok, payload),
+        	),
+        )
+        self.blks2_packet_decoder_0 = grc_blks2.packet_demod_b(grc_blks2.packet_decoder(
+        		access_code="",
+        		threshold=-1,
+        		callback=lambda ok, payload: self.blks2_packet_decoder_0.recv_pkt(ok, payload),
+        	),
+        )
 
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.blks2_packet_decoder_0, 0), (self.blocks_char_to_float_0_0_0, 0))    
+        self.connect((self.blks2_packet_decoder_0_0, 0), (self.blocks_char_to_float_0_0, 0))    
         self.connect((self.blocks_abs_xx_1, 0), (self.blocks_threshold_ff_0, 0))    
         self.connect((self.blocks_abs_xx_1_0, 0), (self.blocks_threshold_ff_0_0, 0))    
         self.connect((self.blocks_char_to_float_0, 0), (self.qtgui_time_sink_x_0, 0))    
-        self.connect((self.blocks_char_to_float_0_1, 0), (self.mysvl_drop_packet_0_0, 1))    
-        self.connect((self.blocks_char_to_float_1, 0), (self.mysvl_drop_packet_0, 1))    
+        self.connect((self.blocks_char_to_float_0_0, 0), (self.mysvl_drop_packet_0_0, 1))    
+        self.connect((self.blocks_char_to_float_0_0_0, 0), (self.mysvl_drop_packet_0, 1))    
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_abs_xx_1, 0))    
         self.connect((self.blocks_complex_to_float_0_0, 0), (self.blocks_abs_xx_1_0, 0))    
-        self.connect((self.blocks_delay_0, 0), (self.blocks_pack_k_bits_bb_0, 0))    
-        self.connect((self.blocks_delay_0_0, 0), (self.blocks_pack_k_bits_bb_0_0, 0))    
-        self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_char_to_float_1, 0))    
-        self.connect((self.blocks_pack_k_bits_bb_0_0, 0), (self.blocks_char_to_float_0_1, 0))    
         self.connect((self.blocks_tag_gate_0, 0), (self.mysvl_triggered_demux_0, 0))    
         self.connect((self.blocks_tag_gate_0_0, 0), (self.mysvl_triggered_demux_0_0, 0))    
         self.connect((self.blocks_tag_gate_1, 0), (self.digital_ofdm_rx_0, 0))    
@@ -305,18 +312,23 @@ class example5b_rx(gr.top_block, Qt.QWidget):
         self.connect((self.digital_corr_est_cc_0, 0), (self.blocks_tag_gate_0, 0))    
         self.connect((self.digital_corr_est_cc_0_0, 1), (self.blocks_complex_to_float_0_0, 0))    
         self.connect((self.digital_corr_est_cc_0_0, 0), (self.blocks_tag_gate_0_0, 0))    
+        self.connect((self.digital_gfsk_demod_0, 0), (self.blks2_packet_decoder_0, 0))    
+        self.connect((self.digital_gfsk_demod_0_0, 0), (self.blks2_packet_decoder_0_0, 0))    
         self.connect((self.digital_ofdm_rx_0, 0), (self.blocks_char_to_float_0, 0))    
-        self.connect((self.digital_psk_demod_0, 0), (self.blocks_delay_0, 0))    
-        self.connect((self.digital_psk_demod_0_0, 0), (self.blocks_delay_0_0, 0))    
-        self.connect((self.mysvl_drop_packet_0, 0), (self.mysvl_svl_1, 0))    
-        self.connect((self.mysvl_drop_packet_0_0, 0), (self.mysvl_svl_1, 1))    
+        self.connect((self.digital_ofdm_rx_0, 0), (self.blocks_udp_sink_0, 0))    
+        self.connect((self.mysvl_drop_packet_0, 0), (self.mysvl_sync_channels_0, 0))    
+        self.connect((self.mysvl_drop_packet_0_0, 0), (self.mysvl_sync_channels_0, 1))    
         self.connect((self.mysvl_svl_1, 0), (self.blocks_tag_gate_1, 0))    
+        self.connect((self.mysvl_sync_channels_0, 0), (self.mysvl_svl_1, 0))    
+        self.connect((self.mysvl_sync_channels_0, 1), (self.mysvl_svl_1, 1))    
         self.connect((self.mysvl_triggered_demux_0, 0), (self.blocks_null_sink_1, 0))    
-        self.connect((self.mysvl_triggered_demux_0, 1), (self.digital_psk_demod_0, 0))    
+        self.connect((self.mysvl_triggered_demux_0, 1), (self.digital_gfsk_demod_0, 0))    
         self.connect((self.mysvl_triggered_demux_0, 2), (self.mysvl_drop_packet_0, 0))    
+        self.connect((self.mysvl_triggered_demux_0, 2), (self.qtgui_time_sink_x_0_0_0, 0))    
         self.connect((self.mysvl_triggered_demux_0_0, 0), (self.blocks_null_sink_1_0, 0))    
-        self.connect((self.mysvl_triggered_demux_0_0, 1), (self.digital_psk_demod_0_0, 0))    
+        self.connect((self.mysvl_triggered_demux_0_0, 1), (self.digital_gfsk_demod_0_0, 0))    
         self.connect((self.mysvl_triggered_demux_0_0, 2), (self.mysvl_drop_packet_0_0, 0))    
+        self.connect((self.mysvl_triggered_demux_0_0, 2), (self.qtgui_time_sink_x_0_0_0_2, 0))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "example5b_rx")
@@ -351,8 +363,8 @@ class example5b_rx(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0_2.set_samp_rate(self.samp_rate)
 
     def get_preamble_len(self):

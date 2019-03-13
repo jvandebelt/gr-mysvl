@@ -348,7 +348,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1700000</value>
+      <value>1200000</value>
     </param>
   </block>
   <block>
@@ -2550,7 +2550,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(72, 334)</value>
+      <value>(72, 318)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3902,7 +3902,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(936, 102)</value>
+      <value>(936, 78)</value>
     </param>
     <param>
       <key>gui_hint</key>

@@ -271,20 +271,23 @@ namespace gr {
 
 			if(drop_samples(trigger_values, packets_to_drop)){
 				for(int i = 0; i <d_ninputs; i++) {
-					printf("Input %d: need to drop %d packets \n", i, packets_to_drop[i]);
+					//printf("Input %d: need to drop %d packets \n", i, packets_to_drop[i]);
 					//consume(i, d_packet_length*drop_offsets[i]);
-					if(d_packet_length*packets_to_drop[i]<=ninput_items[i] || d_stop)
+					if(d_packet_length*packets_to_drop[i]<=ninput_items[i]-items_in[i] || d_stop)
 						items_in[i]+=d_packet_length*packets_to_drop[i];
 					else{
-						items_in[i]+=ninput_items[i];
+						items_in[i]=ninput_items[i];
 						d_stop=true;
 					}
 					if(d_stop){
 						for(int i = 0; i < d_ninputs; i++) {
-							consume((int) i, items_in[i]);
-							produce((int) i, items_out);
+							consume(i, items_in[i]);
+							produce(i, items_out);
 		  				}
-						return WORK_CALLED_PRODUCE;
+						if(items_out > 0)
+							return WORK_CALLED_PRODUCE;
+						else
+							return 0;
 					}
 				}
 			}	

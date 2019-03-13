@@ -348,7 +348,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1700000</value>
+      <value>1200000</value>
     </param>
   </block>
   <block>
@@ -1213,7 +1213,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(952, 185)</value>
+      <value>(952, 201)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1358,7 +1358,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1040, 748)</value>
+      <value>(1064, 844)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1519,7 +1519,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(216, 943)</value>
+      <value>(8, 847)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1680,7 +1680,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(952, 217)</value>
+      <value>(984, 241)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1999,7 +1999,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(992, 641)</value>
+      <value>(1040, 705)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2027,7 +2027,7 @@
     </param>
     <param>
       <key>number_outputs</key>
-      <value>1</value>
+      <value>3</value>
     </param>
     <param>
       <key>spectrum_map</key>
@@ -2550,7 +2550,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(72, 334)</value>
+      <value>(72, 318)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3902,7 +3902,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(936, 102)</value>
+      <value>(936, 78)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -6594,7 +6594,7 @@ os.chdir(script_path)
   <connection>
     <source_block_id>mysvl_svl_1</source_block_id>
     <sink_block_id>blocks_tag_gate_0_0_0</sink_block_id>
-    <source_key>0</source_key>
+    <source_key>1</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>

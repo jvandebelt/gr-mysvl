@@ -465,7 +465,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>5000</value>
+      <value>400000</value>
     </param>
   </block>
   <block>
@@ -645,7 +645,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1472*16</value>
+      <value>1472*8</value>
     </param>
   </block>
   <block>
@@ -739,7 +739,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(16, 125)</value>
+      <value>(8, 85)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1203,6 +1203,69 @@
     </param>
   </block>
   <block>
+    <key>blocks_udp_source</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(40, 159)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_udp_source_0</value>
+    </param>
+    <param>
+      <key>ipaddr</key>
+      <value>127.0.0.1</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>eof</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>byte</value>
+    </param>
+    <param>
+      <key>psize</key>
+      <value>1472</value>
+    </param>
+    <param>
+      <key>port</key>
+      <value>3000</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_vector_source_x</key>
     <param>
       <key>alias</key>
@@ -1529,7 +1592,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(872, 462)</value>
+      <value>(864, 462)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1628,7 +1691,7 @@
     </param>
     <param>
       <key>payload_mod</key>
-      <value>"QPSK"</value>
+      <value>"BPSK"</value>
     </param>
     <param>
       <key>pilot_carriers</key>
@@ -1750,7 +1813,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2109,7 +2172,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -2527,6 +2590,12 @@ os.chdir(script_path)
   <connection>
     <source_block_id>blocks_throttle_0</source_block_id>
     <sink_block_id>mysvl_svl_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_udp_source_0</source_block_id>
+    <sink_block_id>blocks_stream_to_tagged_stream_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

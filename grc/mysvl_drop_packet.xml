@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>Drop Packet</name>
+  <name>Sync Receiver</name>
   <key>mysvl_drop_packet</key>
   <category>mysvl</category>
   <import>import mysvl</import>

@@ -105,7 +105,7 @@ namespace gr {
 			if ((d_tags[i].offset % d_packet_size) != 0)
 		    {
 				//d_drop++;
-		      	printf("Unsynchronized tag. Dropping %lu samples\n", d_tags[i].offset%d_packet_size);
+		      	//printf("Unsynchronized tag. Dropping %lu samples\n", d_tags[i].offset%d_packet_size);
 				//printf("total samples dropped is %lu\n", nitems_read(0)-nitems_written(0)+d_tags[i].offset% d_packet_size);
 
 				memcpy(out, &in[0], sizeof(gr_complex) * d_packet_size*(d_tags[i].offset/d_packet_size));
